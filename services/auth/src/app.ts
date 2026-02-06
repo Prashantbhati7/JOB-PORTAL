@@ -10,6 +10,6 @@ app.use('/api/auth',authRoutes);
 
 
 app.use((err:ApiError,req:express.Request,res:express.Response,next:express.NextFunction)=>{
-    return res.status(err.statusCode).json({"Error : ":err.message})
+    return res.status(err.statusCode || 500).json({"Error : ":err.message})
 })
 export default app;
