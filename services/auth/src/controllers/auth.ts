@@ -95,7 +95,6 @@ const forgotPassword = AsyncHandler(async(req,res,next)=>{
     if (users.length === 0) throw new ApiError(400,"User not found");
     const user = users[0];
     const resetToken = await jwt.sign({
-        
         email:user.email,
         type:'reset'
     },process.env.JWT_SECRET as string,{expiresIn:'15m'});
@@ -112,4 +111,29 @@ const forgotPassword = AsyncHandler(async(req,res,next)=>{
     return res.status(200).json({"message":"Password reset link has been sent to your email"});
 })
 
-export {registerUser,loginUser,forgotPassword};
+const resetPassword = AsyncHandler(async(req,res,next)=>{
+    const {token} = req.params;
+    if (!token) throw new ApiError(400,"Token is required");
+    const {password:newpassword} = req.body;
+    if (!newpassword) throw new ApiError(400,"Password is required");
+
+    let decodedToken:any;
+    decodedToken = await jwt.verify(token.toString(),process.env.JWT_SECRET as string);
+    if (!decodedToken) throw new ApiError(400,"Token is Expired");
+    if (decodedToken.type !== 'reset') throw new ApiError(400,"Invalid Token");
+    
+    const email = decodedToken?.email;
+    const StoredToken = await redisClient.get(`forgot:${email}`);
+    if ( !StoredToken || StoredToken !== token) throw new ApiError(400,"Token has expired ");     // no stored token means time of changing password window expired 
+    
+    const users = await sql`SELECT user_id,email  FROM users WHERE email = ${email}`;
+    if (users.length === 0) throw new ApiError(400,"User not found");
+    const user = users[0];
+    const hashedPass = await bcrypt.hash(newpassword,10);
+    await sql`UPDATE users SET password = ${hashedPass} WHERE email = ${email}`;
+    await redisClient.del(`forgot:${email}`);       // deleting token after reseting password one time so that link stolen can't affect much 
+    return res.status(200).json({"message":"Password has been reset successfully"});
+
+})
+
+export {registerUser,loginUser,forgotPassword,resetPassword};
