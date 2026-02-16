@@ -7,7 +7,7 @@ const startSendMailConsumer = async () => {
         console.log("BROKER VALUE:", process.env.KAFKA_BROKER);
         const kafka = new Kafka({
             clientId: 'mail-service',
-            brokers: ["localhost:9092"],
+            brokers: [process.env.KAFKA_BROKER || "localhost:9092"],
         });
         const consumer = kafka.consumer({ groupId: 'mail-service-group' });
         await consumer.connect();
@@ -23,8 +23,8 @@ const startSendMailConsumer = async () => {
                         port: 465,
                         secure: true,
                         auth: {
-                            user: "xyz",
-                            pass: "yzx"
+                            user: "prashantbhati774@gmail.com",
+                            pass: "lydpwhkbulxszfhj"
                         }
                     });
                     await transporter.sendMail({

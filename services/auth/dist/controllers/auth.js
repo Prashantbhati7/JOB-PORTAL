@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt';
 import getBuffer from "../utils/buffer.js";
 import axios from "axios";
 import jwt from 'jsonwebtoken';
+import { forgotPasswordTemplate } from "../template.js";
+import { PublishToTopic } from "../producer.js";
+import { redisClient } from "../index.js";
 const registerUser = AsyncHandler(async (req, res, next) => {
     const { name, email, password, phone_number, role, bio } = req.body;
     if (!email || !password || !name || !phone_number || !role)
@@ -78,4 +81,28 @@ const loginUser = AsyncHandler(async (req, res, next) => {
     };
     return res.status(200).cookie('token', token, options).json({ "user": user, "message": "User Logged In Successfully", "token": token });
 });
-export { registerUser, loginUser };
+const forgotPassword = AsyncHandler(async (req, res, next) => {
+    const { email } = req.body;
+    if (!email)
+        throw new ApiError(400, "Email is required");
+    const users = await sql `SELECT user_id,email  FROM users WHERE email = ${email}`;
+    if (users.length === 0)
+        throw new ApiError(400, "User not found");
+    const user = users[0];
+    const resetToken = await jwt.sign({
+        email: user.email,
+        type: 'reset'
+    }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    await redisClient.set(`forgot:${email}`, resetToken, { EX: 900 }); // 900 sec - 15 min
+    const message = {
+        to: email,
+        subject: "Reset Your Password  - EzHire",
+        html: forgotPasswordTemplate(resetLink)
+    };
+    PublishToTopic("send-mail", message).catch((error) => {
+        console.log("Filed to Send the Reset Link to Mail :", error);
+    });
+    return res.status(200).json({ "message": "Password reset link has been sent to your email" });
+});
+export { registerUser, loginUser, forgotPassword };
