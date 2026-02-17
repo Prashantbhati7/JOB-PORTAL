@@ -27,8 +27,8 @@ const startSendMailConsumer =  async()=>{
                         port:465,
                         secure:true,
                         auth:{
-                            user:"prashantbhati774@gmail.com",
-                            pass:"lydpwhkbulxszfhj"
+                            user:process.env.SMTP_USER,
+                            pass:process.env.SMTP_PASSWORD       // google account app passwords 
                         }
                     });
                     await transporter.sendMail({

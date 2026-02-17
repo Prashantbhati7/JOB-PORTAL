@@ -1,4 +1,4 @@
-import { error } from "console";
+
 import ApiError from "../utils/ApiError.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 import { sql } from "../utils/db.js";
