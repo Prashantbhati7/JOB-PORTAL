@@ -88,7 +88,7 @@ const registerUser = AsyncHandler(async(req,res,next)=>{
 
 
 const forgotPassword = AsyncHandler(async(req,res,next)=>{
-    const {email} = req.body;
+    const {email} = req.body;           // email is the single source of truth,as user must be the owner of that email to reset password as link is sent to that email only 
     if (!email) throw new ApiError(400,"Email is required");
     const users = await sql`SELECT user_id,email  FROM users WHERE email = ${email}`;
 
