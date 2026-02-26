@@ -1,10 +1,17 @@
 import { Router } from "express";
-import { getUser, myProfile } from "../controller/user.controller.js";
+import { addSkill, getUser, myProfile, removeSkill, updateProfilePic, updateResume, updateUserProfile } from "../controller/user.controller.js";
 import { isAuth } from "../middleware/auth.js";
+import uploadFile from "../middleware/multer.js";
 
 const router = Router();
 
 router.route('/profile').get(isAuth,myProfile);
 router.route('/:userId').get(isAuth,getUser);
+router.route('/profile').patch(isAuth,updateUserProfile);
+router.route('/profile/pic').patch(isAuth,uploadFile,updateProfilePic);
+router.route('/resume').patch(isAuth,uploadFile,updateResume);
+router.route('/skills').patch(isAuth,addSkill);
+router.route('/skills').delete(isAuth,removeSkill);
+
 
 export default router;

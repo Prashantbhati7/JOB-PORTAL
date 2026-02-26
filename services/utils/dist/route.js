@@ -10,7 +10,6 @@ router.post('/upload', async (req, res) => {
             await cloudinary.uploader.destroy(public_id);
         }
         const cloud = await cloudinary.uploader.upload(buffer);
-        console.log("cloud ", cloud);
         res.status(200).json({ url: cloud.secure_url, public_id: cloud.public_id });
     }
     catch (error) {

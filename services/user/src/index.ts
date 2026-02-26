@@ -15,4 +15,4 @@ app.use('/api/user',userrouter);
 
 const PORT = process.env.PORT || 5003;
 
-app.listen(PORT,()=> console.log("Utils service is running on port ",PORT));
+app.listen(PORT,()=> console.log("User service is running on port ",PORT));
