@@ -11,7 +11,9 @@ app.use(express.urlencoded({extended:true}));
 
 
 app.use('/api/user',userrouter);
-
+app.use((err:any,req:express.Request,res:express.Response,next:express.NextFunction)=>{
+    return res.status(err.statusCode || 500).json({"Error : ":err.message})
+} )
 
 const PORT = process.env.PORT || 5003;
 

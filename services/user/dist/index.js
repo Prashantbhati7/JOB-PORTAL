@@ -6,5 +6,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/user', userrouter);
+app.use((err, req, res, next) => {
+    return res.status(err.statusCode || 500).json({ "Error : ": err.message });
+});
 const PORT = process.env.PORT || 5003;
 app.listen(PORT, () => console.log("User service is running on port ", PORT));

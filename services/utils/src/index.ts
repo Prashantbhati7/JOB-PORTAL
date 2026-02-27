@@ -25,7 +25,9 @@ app.use(express.urlencoded({limit:'50mb',extended:true}));
 
 app.use('/api/utils',routes);
 
-
+app.use((err:any,req:express.Request,res:express.Response,next:express.NextFunction)=>{
+    return res.status(err.statusCode || 500).json({"Error : ":err.message})
+} )
 
 
 
