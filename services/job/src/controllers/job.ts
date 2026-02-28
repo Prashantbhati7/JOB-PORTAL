@@ -64,6 +64,52 @@ const updateJob = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     return res.status(200).json({"message":"Job Updated Successfully","job":updatedJob});
 })
 
-const getJobs = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+const getAllComapny = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const user = req.user;
+    if (!user) throw new ApiError(401,"Not Authenticated");
+    const companies = await sql`SELECT * FROM companies WHERE recruiter_id = ${user.user_id}`;
+    return res.status(200).json({"message":"Companies Fetched Successfully","companies":companies});
 })
-export {createCompany,deleteCompany,createJob,updateJob};
+
+
+const getCompanyDetails = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const {id} = req.params;
+    if (!id) throw new ApiError(400,"Company Id is required");
+    const [comapnay] = await sql`SELECT c.*,COALESCE (
+    (
+        SELECT json_agg(j.*) FROM jobs j WHERE j.company_id = c.company_id
+    ),
+    '[]'::json
+    ) AS jobs FROM companies c WHERE c.company_id = ${id} GROUP BY c.company_id;`;
+    if (!comapnay) throw new ApiError(404,"Company Not Found");
+    return res.status(200).json({"message":"Company Fetched Successfully","company":comapnay});
+})
+
+const getAllActiveJobs = AsyncHandler(async(req,res,next)=>{
+    const {title,location} = req.query as {title?:string,location?:string};
+    let query = `SELECT j.job_id,j.title,j.description,j.salary,j.location,j.job_type,j.role,j.work_location,c.name AS company_name,c.logo AS company_logo,c.company_id AS company_id,j.created_at FROM jobs j JOIN companies c ON j.company_id = c.company_id WHERE j.is_active = true`;
+    const values = [];
+    let paramIndex = 1;
+    if (title) {
+        values.push(`%${title}%`);
+        query += ` AND j.title ILIKE $${paramIndex++}`;
+    }
+    if (location) {
+        values.push(`%${location}%`);
+        query += ` AND j.location ILIKE $${paramIndex++}`;
+    }
+    query += ` ORDER BY j.created_at DESC`;
+    const jobs = await sql.query(query,values) as any;
+    return res.status(200).json({"message":"Jobs Fetched Successfully","jobs":jobs});
+})
+
+const getSingleJob = AsyncHandler(async(req,res,next)=>{
+    const {job_id} = req.params;
+    if (!job_id) throw new ApiError(400,"Job Id is required");
+    const [job] = await sql`SELECT * FROM jobs WHERE job_id = ${job_id}`;
+    if (!job) throw new ApiError(404,"Job Not Found");
+    return res.status(200).json({"message":"Job Fetched Successfully","job":job});
+})
+
+
+export {createCompany,deleteCompany,createJob,updateJob,getAllComapny,getCompanyDetails,getAllActiveJobs,getSingleJob};

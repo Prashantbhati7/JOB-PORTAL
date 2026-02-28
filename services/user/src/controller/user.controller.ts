@@ -144,4 +144,9 @@ const removeSkill = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     
 })
 
+
+
+
+
+
 export {myProfile,getUser,updateUserProfile,updateProfilePic,updateResume,addSkill,removeSkill};
