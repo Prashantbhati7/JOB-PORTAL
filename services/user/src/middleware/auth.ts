@@ -9,7 +9,7 @@ interface User {
     email:string,
     password:string,
     phone_number:string,
-    role:'jobseeker'|'employer',
+    role:'jobseeker'|'recruiter',
     bio?:string,
     resume?:string,
     resume_public_id?:string,

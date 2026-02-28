@@ -145,8 +145,45 @@ const removeSkill = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
 })
 
 
+const applyForJob = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const user = req.user;
+    if (!user) throw new ApiError(401,"Authentication Error ");
+    if (user.role !== 'jobseeker') throw new ApiError(403,"Only Jobseekers can apply for jobs");
+    const applicantId = user.user_id;
+    const resume = user.resume;
+    if (!resume) throw new ApiError(400,"Resume Not uploaded , Please upload your resume first");
+    const resumePublicId = user.resume_public_id;
+    const {job_id} = req.body;
+    if (!job_id) throw new ApiError(400,"Job Id is required");
+    const [job] = await sql`SELECT is_active FROM jobs WHERE job_id = ${job_id}`;
+    if (!job || !job.is_active ) throw new ApiError(404,"Job Not more active");
+    const now = Date.now();
+
+    const subtime = req.user?.subscription ? new Date(req.user.subscription).getTime() : 0;
+    const isSubscribed = subtime > now;
+
+    const [existingApplication] = await sql`SELECT * FROM applications WHERE job_id = ${job_id} AND applicant_id = ${applicantId}`;
+    if (existingApplication) throw new ApiError(409,"You have already applied for this job");
+
+    let newApplication;
+    try{
+        [newApplication] = await sql`INSERT INTO applications(job_id,applicant_id,applicant_email,resume,resume_public_id,subscribed) VALUES(${job_id},${applicantId},${user.email},${resume},${resumePublicId},${isSubscribed}) RETURNING *`;
+    }catch(error:any){
+        if(error.code === '23505'){
+            throw new ApiError(409,"You have already applied for this job");
+        }
+        throw new ApiError(500,"Error in applying for job");
+    }
+    return res.status(200).json({"message":"Application Created Successfully","application":newApplication});
+})
+
+const getAllApplications = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const user = req.user;
+    if (!user) throw new ApiError(401,"Authentication Error ");
+    if (user.role === 'recruiter') throw new ApiError(403,"Recruiter can't apply for Jobs");
+    const applications = await sql`SELECT a.* ,j.title AS job_title,j.salary AS job_salary,j.location AS job_location FROM applications a JOIN jobs j ON a.job_id = j.job_id WHERE a.applicant_id = ${req.user?.user_id}`;
+    return res.status(200).json({"message":"Applications Fetched Successfully","applications":applications});
+})
 
 
-
-
-export {myProfile,getUser,updateUserProfile,updateProfilePic,updateResume,addSkill,removeSkill};
+export {myProfile,getUser,updateUserProfile,updateProfilePic,updateResume,addSkill,removeSkill,applyForJob,getAllApplications};
