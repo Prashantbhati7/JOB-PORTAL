@@ -4,6 +4,8 @@ import ApiError from "../utils/ApiError.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 import getBuffer from "../utils/buffer.js";
 import { sql } from "../utils/db.js";
+import { applicationStatusUpdateTemplate } from "../template.js";
+import { PublishToTopic } from "../producer.js";
 
 const createCompany = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     const user = req.user;
@@ -111,5 +113,42 @@ const getSingleJob = AsyncHandler(async(req,res,next)=>{
     return res.status(200).json({"message":"Job Fetched Successfully","job":job});
 })
 
+const getAllApplicationsForJob = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const user = req.user;
+    if(!user) throw new ApiError(401,"Not Authenticated");
+    if (user.role === 'jobseeker') throw new ApiError(403,"Not Authorized to view applications");
+    const {job_id} = req.params;
+    if (!job_id) throw new ApiError(400,"Job Id is required");
+    const [job] = await sql`SELECT posted_by_recruiter_id FROM jobs WHERE job_id = ${job_id}`;
+    if (!job) throw new ApiError(404,"Job Not Found");
+    if (job.posted_by_recruiter_id != user.user_id) throw new ApiError(403,"Not Authorized to view applications");
+    const applications = await sql`SELECT a.* ,j.title AS job_title,j.salary AS job_salary,j.location AS job_location FROM applications a JOIN jobs j ON a.job_id = j.job_id WHERE a.job_id = ${job_id} ORDER BY a.subscribed DESC,a.applied_at ASC`;
+    return res.status(200).json({"message":"Applications Fetched Successfully","applications":applications});
+})
 
-export {createCompany,deleteCompany,createJob,updateJob,getAllComapny,getCompanyDetails,getAllActiveJobs,getSingleJob};
+
+const updateApplication = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const user = req.user;
+    if (!user) throw new ApiError(401,"Not Authenticated");
+    if (user.role!='recruiter') throw new ApiError(403,"Not Authorized to update application");
+    const {id} = req.params;
+    if (!id) throw new ApiError(400,"Application Id is required");
+    const [application] = await sql`SELECT * FROM applications WHERE application_id = ${id}`;
+    if (!application) throw new ApiError(404,"No Application Found");
+    const [job] = await sql`SELECT posted_by_recruiter_id,title FROM jobs WHERE job_id = ${application.job_id}`;
+    if (!job) throw new ApiError(404,"Job Not Found");
+    if (job.posted_by_recruiter_id != user.user_id) throw new ApiError(403,"Not Authorized to update application");
+    const {status} = req.body;
+    if (!status) throw new ApiError(400,"Status is required");
+    const [updatedApplication] = await sql`UPDATE applications SET status = ${status} WHERE application_id = ${id} RETURNING *`;
+    const message = {
+        to:application.applicant_email,
+        subject:"Application Update - EzHire",
+        html:applicationStatusUpdateTemplate(job.title)
+    }
+    PublishToTopic("send-mail",message).catch((error)=>console.error("Failed to publish message to Kafka : ",error));
+    return res.status(200).json({"message":"Application Updated Successfully","job":job,"application":updatedApplication});
+})
+
+
+export {createCompany,deleteCompany,createJob,updateJob,getAllComapny,getCompanyDetails,getAllActiveJobs,getSingleJob,getAllApplicationsForJob,updateApplication};
