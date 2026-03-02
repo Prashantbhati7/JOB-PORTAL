@@ -1,10 +1,12 @@
-import { Button } from "@/components/ui/button"
+import CareerGuide from "@/components/career-guide"
+import Hero from "@/components/Hero"
 
 
 const page = () => {
   return (
     <div>
-       
+       <Hero></Hero>
+       <CareerGuide/>
     </div>
   )
 }
