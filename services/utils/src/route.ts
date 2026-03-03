@@ -147,7 +147,7 @@ router.post('/resume-analyser',async(req,res)=>{
                                         - Section organization and flow
         `;
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
+            model: "gemini-2.5-flash",
             contents: [{role:"user",parts:[{text:prompt},{inlineData:{mimeType:'application/pdf',data:pdfBase64.replace(/^data:application\/pdf;base64,/, "")}}]}],
         }); 
         let jsonResponse ;
