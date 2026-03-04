@@ -59,3 +59,33 @@ export interface ResumeAnalysisResponse{
     strengths:string[];
     summary:string;
 }
+
+export interface User{
+    user_id:number,
+    name:string,
+    email:string,
+    password:string,
+    phone_number:string,
+    role:'jobseeker'|'recruiter',
+    bio?:string,
+    resume?:string,
+    resume_public_id?:string,
+    profile_pic?:string,
+    profile_pic_public_id?:string,
+    skills?:string[],
+    subscription:string|null
+}
+
+export interface AppContextType{
+    user:User|null;
+    loading:boolean;
+    btnloading:boolean;
+    isAuth:boolean;
+    setUser:React.Dispatch<React.SetStateAction<User|null>>;
+    setIsAuth:React.Dispatch<React.SetStateAction<boolean>>;
+    setLoading:React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface AppProviderProps{
+    children:React.ReactNode;
+}

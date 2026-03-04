@@ -15,7 +15,7 @@ cloudinary.config({
 
 
 const app = express();
-app.use(cors());
+app.use(cors({credentials:true}));
 
 const PORT  = process.env.PORT || 5001;
 
@@ -26,7 +26,7 @@ app.use(express.urlencoded({limit:'50mb',extended:true}));
 app.use('/api/utils',routes);
 
 app.use((err:any,req:express.Request,res:express.Response,next:express.NextFunction)=>{
-    return res.status(err.statusCode || 500).json({"Error : ":err.message})
+    return res.status(err.statusCode || 500).json({message:err.message})
 } )
 
 

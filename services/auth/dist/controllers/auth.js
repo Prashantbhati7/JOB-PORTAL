@@ -56,18 +56,26 @@ const registerUser = AsyncHandler(async (req, res, next) => {
     return res.status(201).cookie('token', token, options).json({ "user": registeredUser, "message": "User Registered Successfully", "token": token });
 });
 const loginUser = AsyncHandler(async (req, res, next) => {
+    console.log("got a req at login user");
     const { email, password } = req.body;
-    if (!email || !password)
+    if (!email || !password) {
+        console.log("email is ", email, "password is ", password);
         throw new ApiError(400, "All fields are required");
+    }
     const user = await sql `SELECT u.user_id,u.name,u.email,u.password,u.phone_number,u.role,u.bio,u.resume,u.profile_pic,u.subscription, ARRAY_AGG(s.name) Filter (WHERE s.name IS NOT NULL) AS skills
      FROM users u LEFT JOIN user_skills us ON u.user_id = us.user_id LEFT JOIN skills s ON us.skill_id = s.skill_id WHERE u.email = ${email} GROUP BY u.user_id `;
-    if (user.length === 0)
-        throw new ApiError(400, "Invalid Credentials");
+    console.log("user is ", user);
+    if (user.length === 0) {
+        console.log("user not found");
+        throw new ApiError(400, "User not found");
+    }
     const userobj = user[0];
     userobj.password = userobj.password.toString();
     const isMatch = await bcrypt.compare(password, userobj.password);
-    if (!isMatch)
-        throw new ApiError(401, "Invalid Credentials");
+    if (!isMatch) {
+        console.log("password not matched");
+        throw new ApiError(400, "Invalid Credentials");
+    }
     userobj.skills = userobj.skills || [];
     delete userobj.password;
     const token = await jwt.sign({
@@ -79,7 +87,7 @@ const loginUser = AsyncHandler(async (req, res, next) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
     };
-    return res.status(200).cookie('token', token, options).json({ "user": user, "message": "User Logged In Successfully", "token": token });
+    return res.status(200).cookie('token', token, options).json({ "user": userobj, "message": "User Logged In Successfully", "token": token });
 });
 const forgotPassword = AsyncHandler(async (req, res, next) => {
     const { email } = req.body; // email is the single source of truth,as user must be the owner of that email to reset password as link is sent to that email only 

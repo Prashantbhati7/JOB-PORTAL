@@ -6,7 +6,8 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
-import { get } from "http";
+
+import toast from "react-hot-toast";
 
 
 const CareerGuide = () => {
@@ -45,7 +46,7 @@ const CareerGuide = () => {
   }
   const getcareerGuidance = async()=>{
       if (skills.length === 0) {
-        alert("Please add atleast one skill")
+        toast.error("Please add atleast one skill")
       }
       setLoading(true);
       setError(null);
@@ -53,10 +54,10 @@ const CareerGuide = () => {
         const response = await axios.post('http://localhost:5001/api/utils/carrier',{skills:skills})
         console.log("guidence reponse is ",response);
         setResponse(response.data);
-        alert('Career Guidance Generated');
+        toast.success('Career Guidance Generated');
       }catch(error){
         console.log(error);
-        setError("Something went wrong");
+        toast.error('Failed to generate Career Guidance')
       }finally{
         setLoading(false);
       }

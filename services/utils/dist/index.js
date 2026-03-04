@@ -12,12 +12,12 @@ cloudinary.config({
     api_secret: process.env.CLOUD_API_SECRET
 });
 const app = express();
-app.use(cors());
+app.use(cors({ credentials: true }));
 const PORT = process.env.PORT || 5001;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api/utils', routes);
 app.use((err, req, res, next) => {
-    return res.status(err.statusCode || 500).json({ "Error : ": err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
 });
 app.listen(PORT, () => { console.log("Utils service is running on port ", PORT); });
