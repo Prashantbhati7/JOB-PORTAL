@@ -3,6 +3,7 @@ import app from './app.js'
 import dotenv from 'dotenv'
 import { sql } from './utils/db.js';
 import { connectKafka } from './producer.js';
+
 dotenv.config();
 connectKafka();
 const PORT = process.env.PORT || 5004;

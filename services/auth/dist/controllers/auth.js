@@ -13,14 +13,12 @@ const registerUser = AsyncHandler(async (req, res, next) => {
     if (!email || !password || !name || !phone_number || !role)
         throw new ApiError(400, "All fields are required");
     const existingUser = await sql `SELECT * FROM users WHERE email = ${email}`;
-    // if (existingUser) console.log("user exists ",existingUser)
     if (existingUser.length > 0)
         throw new ApiError(400, "User already exists");
     const hashedPass = await bcrypt.hash(password, 10);
     let registeredUser;
     if (role === 'jobseeker') {
         const file = req.file; // multer 
-        // console.log("file ",file);
         if (!file) {
             throw new ApiError(400, "Resume File is required");
         }
@@ -36,7 +34,6 @@ const registerUser = AsyncHandler(async (req, res, next) => {
         });
         const dbres = await sql `INSERT INTO users (name,email,password,phone_number,role,bio,resume,resume_public_id) 
         VALUES (${name},${email},${hashedPass},${phone_number},${role},${bio},${data.url},${data.public_id}) RETURNING user_id,name,email,phone_number,role,bio,resume,created_at`;
-        // console.log("user is  ",dbres);
         registeredUser = dbres[0];
     }
     else {
@@ -56,7 +53,6 @@ const registerUser = AsyncHandler(async (req, res, next) => {
     return res.status(201).cookie('token', token, options).json({ "user": registeredUser, "message": "User Registered Successfully", "token": token });
 });
 const loginUser = AsyncHandler(async (req, res, next) => {
-    console.log("got a req at login user");
     const { email, password } = req.body;
     if (!email || !password) {
         console.log("email is ", email, "password is ", password);
@@ -64,16 +60,13 @@ const loginUser = AsyncHandler(async (req, res, next) => {
     }
     const user = await sql `SELECT u.user_id,u.name,u.email,u.password,u.phone_number,u.role,u.bio,u.resume,u.profile_pic,u.subscription, ARRAY_AGG(s.name) Filter (WHERE s.name IS NOT NULL) AS skills
      FROM users u LEFT JOIN user_skills us ON u.user_id = us.user_id LEFT JOIN skills s ON us.skill_id = s.skill_id WHERE u.email = ${email} GROUP BY u.user_id `;
-    console.log("user is ", user);
     if (user.length === 0) {
-        console.log("user not found");
         throw new ApiError(400, "User not found");
     }
     const userobj = user[0];
     userobj.password = userobj.password.toString();
     const isMatch = await bcrypt.compare(password, userobj.password);
     if (!isMatch) {
-        console.log("password not matched");
         throw new ApiError(400, "Invalid Credentials");
     }
     userobj.skills = userobj.skills || [];

@@ -33,7 +33,7 @@ export const connectKafka = async () => {
     }
     catch (error) {
         console.log("Failed to connect Kafka: ", error);
-        throw new ApiError(404, "Kafka not connected");
+        // throw new ApiError(404,"Kafka not connected");
     }
 };
 export const PublishToTopic = async (topic, message) => {
