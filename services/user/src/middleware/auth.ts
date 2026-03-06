@@ -26,7 +26,9 @@ export interface AuthenticatedRequest extends Request{
 export const isAuth = async(req:AuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> =>{
     try{
         const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
-        if (!token) throw new Error("Token not Found");
+        if (!token) {
+            throw new Error("token not found");
+        }
         const decodedToken = await jwt.verify(token,process.env.JWT_SECRET as string) as JwtPayload;
         if (!decodedToken || !decodedToken.user_id) throw new Error("Invalid Token");
         const user = await sql`SELECT u.user_id,u.name,u.email,u.phone_number,u.role,u.bio,u.resume,u.resume_public_id,u.profile_pic,u.profile_pic_public_id,u.subscription, ARRAY_AGG(s.name) Filter (WHERE s.name IS NOT NULL) AS skills FROM users u LEFT JOIN user_skills us ON u.user_id = us.user_id LEFT JOIN skills s ON us.skill_id = s.skill_id WHERE u.email = ${decodedToken.email} GROUP BY u.user_id `;

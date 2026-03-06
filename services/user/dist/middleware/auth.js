@@ -4,8 +4,9 @@ import ApiError from "../utils/ApiError.js";
 export const isAuth = async (req, res, next) => {
     try {
         const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
-        if (!token)
-            throw new Error("Token not Found");
+        if (!token) {
+            throw new Error("token not found");
+        }
         const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
         if (!decodedToken || !decodedToken.user_id)
             throw new Error("Invalid Token");

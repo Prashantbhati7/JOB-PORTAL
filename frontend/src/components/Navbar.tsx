@@ -3,19 +3,28 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Briefcase, CrossIcon, Home, Info, LogOut, MenuIcon, User, User2Icon, X } from "lucide-react";
+import { Briefcase, CrossIcon, Home, Info, LoaderIcon, LogOut, MenuIcon, User, User2Icon, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ModeToggle } from "./mode-toggle";
+import { UseAppData } from "@/context/appContext";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
     const [isOpen,setIsOpen] = useState(false);
     const toggleOpen = ()=>{
         setIsOpen(!isOpen);
     }
-    const isAuth = true;
-    const logOutHandler = ()=>{
-        
+    const {isAuth,setIsAuth,setUser,loading,setLoading} = UseAppData();
+    const logOutHandler = async()=>{
+        setLoading(true);
+        setIsAuth(false);
+        // remove cookie using backend services 
+        axios.get('http://localhost:5002/api/auth/logout',{withCredentials:true});
+        toast.success("Logged Out Successfully");
+        setUser(null);
+        setLoading(false);
     }
   return (
     <nav className="z-50 sticky top-0 bg-backgroud/80 border-b backdrop-blur-md shadow-sm ">

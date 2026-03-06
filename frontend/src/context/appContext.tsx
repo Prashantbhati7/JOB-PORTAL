@@ -1,9 +1,10 @@
 "use client";
 
 import { AppProviderProps,AppContextType ,User } from "@/type";
+import axios from "axios";
 
-import React, { createContext, useContext, useState } from "react";
-import { Toaster } from "react-hot-toast";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 const AppContext = createContext<AppContextType| undefined >(undefined);
 
 const AppProvider:React.FC<AppProviderProps> = ({children})=>{
@@ -11,6 +12,26 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const [isAuth,setIsAuth] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(true);
     const [btnloading,setBtnLoading] = useState<boolean>(false);
+    const fethcUser = async()=>{
+        setLoading(true);
+        try{
+            const {data} = await axios.get(`${user_service}/api/user/profile` ,{withCredentials:true});
+            console.log("user is ",data);
+            setUser(data);
+            setIsAuth(true);
+            
+            return;
+    }catch(error){
+        console.log(error);
+        setIsAuth(false);
+        return;
+    }finally{
+        setLoading(false);
+    }
+    }
+    useEffect(()=>{
+        fethcUser();
+    },[])
     return(
         <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading}}>
             {children}

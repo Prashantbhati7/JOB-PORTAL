@@ -96,6 +96,14 @@ const registerUser = AsyncHandler(async(req,res,next)=>{
     return res.status(200).cookie('token',token,options).json({"user":userobj,"message":"User Logged In Successfully","token":token});
 })
 
+const logoutUser = AsyncHandler(async(req,res,next)=>{
+    const options = {
+        httpOnly:true,
+        secure:process.env.NODE_ENV === 'production',
+    }
+    return res.status(200).clearCookie('token',options).json({"message":"User Logged Out Successfully"});
+});
+
 
 const forgotPassword = AsyncHandler(async(req,res,next)=>{
     const {email} = req.body;           // email is the single source of truth,as user must be the owner of that email to reset password as link is sent to that email only 
@@ -146,4 +154,4 @@ const resetPassword = AsyncHandler(async(req,res,next)=>{
 
 })
 
-export {registerUser,loginUser,forgotPassword,resetPassword};
+export {registerUser,loginUser,forgotPassword,resetPassword,logoutUser};

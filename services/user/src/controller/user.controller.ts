@@ -8,6 +8,7 @@ import axios from "axios";
 
 const myProfile = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     const user = req.user;
+    if (!user) throw new ApiError(401,"Authentication Error ")
     return res.status(200).json({
         success:true,
         user
