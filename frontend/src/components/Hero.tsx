@@ -1,10 +1,13 @@
-import { ArrowRight, Briefcase, Search, TrendingUp } from "lucide-react"
+import { ArrowRight, Briefcase, LoaderIcon, Search, TrendingUp } from "lucide-react"
 import { Button } from "./ui/button"
 import Link from "next/link"
 import Image from "next/image"
 
 
+
 const Hero = () => {
+   
+    
   return (
    <section className="relative  overflow-hidden bg-secondary  min-h-screen ">
         <div className="absolute inset-0 opacity-0">

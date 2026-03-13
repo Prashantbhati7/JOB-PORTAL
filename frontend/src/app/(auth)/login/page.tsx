@@ -12,12 +12,14 @@ import { ArrowRight, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Loading from "@/components/loading";
 
 const Page = () => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [BtnLoading,setBtnLoading] = useState(false);
     const {isAuth,setUser,loading,setIsAuth,setLoading }= UseAppData();
+        if (loading) return <Loading/>
     if (isAuth){
       return redirect('/');
     }
@@ -60,6 +62,7 @@ const Page = () => {
         setBtnLoading(false);
       }
     }
+   
   return (
     <div className="min-h-[90vh] flex items-center justify-center px-4 py-12 md:px-6 lg:px-8">
         <div className="w-full max-w-md">

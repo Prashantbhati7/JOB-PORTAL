@@ -1,9 +1,9 @@
  "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { Briefcase, CrossIcon, Home, Info, LoaderIcon, LogOut, MenuIcon, User, User2Icon, X } from "lucide-react";
+import { Briefcase, CrossIcon, Home, Info, Loader2Icon, LoaderIcon, LogOut, MenuIcon, User, User2Icon, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ModeToggle } from "./mode-toggle";
@@ -16,17 +16,13 @@ const Navbar = () => {
     const toggleOpen = ()=>{
         setIsOpen(!isOpen);
     }
-    const {isAuth,setIsAuth,setUser,loading,setLoading} = UseAppData();
+    const {isAuth,setIsAuth,logout,setUser,user,loading,setLoading} = UseAppData();
     const logOutHandler = async()=>{
-        setLoading(true);
-        setIsAuth(false);
-        // remove cookie using backend services 
-        axios.get('http://localhost:5002/api/auth/logout',{withCredentials:true});
-        toast.success("Logged Out Successfully");
-        setUser(null);
-        setLoading(false);
+        await logout();
+        
     }
-  return (
+ return (
+   
     <nav className="z-50 sticky top-0 bg-backgroud/80 border-b backdrop-blur-md shadow-sm ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="flex justify-between items-center h-16 ">
@@ -50,19 +46,19 @@ const Navbar = () => {
             </div>
             {/* right side Actions */}
             <div className="hidden md:flex items-center gap-3">
-                 { isAuth ? (<Popover>
+                 { loading ?<div> <Loader2Icon className="animate-spin"/>  </div>: isAuth ? (<Popover>
                     <PopoverTrigger asChild>
                         <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                             <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-background ring-blue-500/20 cursor-pointer hover:ring-blue-500/40 transition-all">
-                                {/* <AvatarImage src={} alt="avatar"></AvatarImage> */}
-                                <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-500 dark:text-blue-400">P</AvatarFallback>
+                                <AvatarImage src={user?.profile_pic as string} alt={user ? user.name : ""}></AvatarImage>
+                                <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-500 dark:text-blue-400">{user?user.name?.charAt(0):""}</AvatarFallback>
                             </Avatar>
                         </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-56 p-2" align="end">
                         <div className="px-3 py-2 border-b">
-                            <p className="text-sm font-semibold">Prashant</p>
-                            <p className="text-xs opacity-80 truncate">prashant@gmail.com</p>
+                            <p className="text-sm font-semibold">{user?.name }</p>
+                            <p className="text-xs opacity-80 truncate">{user?.email}</p>
                         </div>
                         <Link href={'/account'}>
                             <Button className="w-full justify-start gap-2" variant={"ghost"}>
@@ -95,7 +91,7 @@ const Navbar = () => {
             </div>
       </div>
     </nav>
-  )
+   )
 }
 
 export default Navbar

@@ -1,0 +1,13 @@
+
+
+const Loading = () => {
+  return (
+    <div className="flex-col min-h-screen gap-4 w-full flex items-center justify-center ">
+      <div className="w-20 h-20 border-4 border-transparent text-red-400 text-4xl animate-spin  flex items-center  justify-center border-t-red-400 rounded-full">
+
+      </div>
+    </div>
+  )
+}
+
+export default Loading

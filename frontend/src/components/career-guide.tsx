@@ -2,7 +2,7 @@
 import { CareerGuideResponse } from "@/type";
 import axios from "axios";
 import { ArrowRight, BookOpen, Briefcase, Lightbulb, Loader, Sparkle, Target, TrendingUp, X } from "lucide-react";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -39,7 +39,7 @@ const CareerGuide = () => {
       return newskills;
     })
   }
-  const handleKeyPress = (e:KeyboardEvent<HTMLInputElement>)=>{
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>)=>{
     if (e.key === 'Enter'){
       addSkill();
     }

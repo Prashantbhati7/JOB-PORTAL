@@ -17,9 +17,8 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
         try{
             const {data} = await axios.get(`${user_service}/api/user/profile` ,{withCredentials:true});
             console.log("user is ",data);
-            setUser(data);
+            setUser(data.user);
             setIsAuth(true);
-            
             return;
     }catch(error){
         console.log(error);
@@ -27,13 +26,29 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
         return;
     }finally{
         setLoading(false);
+        
     }
+    }
+    const logout = async()=>{
+        setLoading(true);
+        try{
+            const {data} = await axios.get(`${auth_service}/api/auth/logout`,{withCredentials:true});
+            toast.success(data.message)
+        }
+        catch(error){
+            console.log(error);
+        }
+        finally{
+            setUser(null);
+            setIsAuth(false);
+            setLoading(false);
+        }
     }
     useEffect(()=>{
         fethcUser();
     },[])
     return(
-        <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading}}>
+        <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading,logout}}>
             {children}
             <Toaster/>
         </AppContext.Provider>

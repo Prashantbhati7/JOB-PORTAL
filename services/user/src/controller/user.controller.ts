@@ -44,7 +44,6 @@ const updateUserProfile = AsyncHandler(async(req:AuthenticatedRequest,res,next)=
 const updateProfilePic = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     const user = req.user;
     if (!user) throw new ApiError(401,"Authentication Error ");
-    
     const file = req.file;
     if (!file) throw new ApiError(400,"No image is found ");
     const oldPublicId = user.profile_pic_public_id;
