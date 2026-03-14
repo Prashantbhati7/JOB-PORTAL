@@ -87,6 +87,10 @@ export interface AppContextType{
     logout:()=>Promise<void>;
     fetchUser:()=>Promise<void>;
     updateProfilePic:(formData:any)=>Promise<void>;
+    updateResume:(formData:any)=>Promise<void>;
+    updateUser:(name:string,phone_number:string,bio:string)=>Promise<void>;
+    addSkill:(skill:string,setSkill:React.Dispatch<React.SetStateAction<string | "">>)=>Promise<void>;
+    removeSkill:(skill:string)=>Promise<void>;
 }
 
 export interface AppProviderProps{

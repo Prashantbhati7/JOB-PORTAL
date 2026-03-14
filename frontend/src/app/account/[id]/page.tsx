@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Info from "../(components)/info";
+import Skills from "@/components/Skills";
 
 
 const Userpage = () => {
@@ -38,6 +39,7 @@ const Userpage = () => {
     <>
     {user && <div className='w-[90%] md:w-[60%] m-auto'>
      <Info user={user} isYourAccount={false} />
+      {user.role=='jobseeker' && <Skills user={user} isYourAccount={false}/> }
     </div>}
     </>
   )

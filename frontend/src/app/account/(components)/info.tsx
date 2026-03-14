@@ -1,9 +1,12 @@
 "use client"
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { UseAppData } from '@/context/appContext';
 import { AccountProps } from '@/type';
-import { Briefcase, Camera, FileText, Mail, NotepadText, Phone, User } from 'lucide-react';
+import { Briefcase, Camera, Edit, FileText, Mail, Notebook, NotepadText, Phone, PhoneIcon, User, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 
 import { redirect } from 'next/navigation';
@@ -11,16 +14,16 @@ import { redirect } from 'next/navigation';
 import React, { ChangeEvent, useRef, useState } from 'react'
 
 const Info:React.FC<AccountProps> = ({user,isYourAccount}) => {
-  const [btnloading,setBtnLoading] = useState(false);
+ 
   const inputRef = useRef<HTMLInputElement |null>(null);
-  const editRef = useRef<HTMLInputElement | null> (null);
+  const editRef = useRef<HTMLButtonElement | null> (null);
   const resumeRef = useRef<HTMLInputElement | null> (null);
  
   const [name,setName] = useState("");
   const [phoneNumber,setPhoneNumber] = useState("");
   
   const [bio,setBio] = useState("");
-  const {updateProfilePic} = UseAppData();
+  const {updateProfilePic,updateResume,btnloading,updateUser} = UseAppData();
   const handleClick = ()=>{
     inputRef.current?.click();
   }
@@ -39,7 +42,7 @@ const Info:React.FC<AccountProps> = ({user,isYourAccount}) => {
     setBio(user.bio || ""); 
   }
   const updataProfilehandler = ()=>{
-
+    updateUser(name,phoneNumber as string,bio);
   }
   const handleResumeClick = ()=>{
     resumeRef.current?.click();
@@ -54,7 +57,7 @@ const Info:React.FC<AccountProps> = ({user,isYourAccount}) => {
       }
       const formData = new FormData();
       formData.append('file',file);
-      
+      updateResume(formData);
     }
   }
   return (
@@ -85,6 +88,9 @@ const Info:React.FC<AccountProps> = ({user,isYourAccount}) => {
               <div className="flex items-center gap-3">
                 <h1 className='text-3xl font-bold'>{user.name}</h1>
                 {/* edit button */}
+               { isYourAccount &&  <Button variant={'ghost'} size={'icon'} onClick={handleEditClick} className='gap-2 h-8 w-8 rounded-2xl mx-2' >
+                  <Edit size={16}></Edit>
+                </Button>}
               </div>
               <div className=' flex items-center gap-2 text-sm opacity-70'>
                 <Briefcase size={20}/>
@@ -152,6 +158,45 @@ const Info:React.FC<AccountProps> = ({user,isYourAccount}) => {
            }
         </div>
       </Card>
+      {/* Dialog box for edit */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button ref={editRef} variant={'outline'} className='hidden'>Edit Profile</Button>
+
+        </DialogTrigger>
+        <DialogContent className='sm:max-w-[500px] '>
+           <DialogHeader>
+            <DialogTitle className='text-2xl '>Edit Profile</DialogTitle>
+           </DialogHeader>
+           <div className='space-y-5 py-4 '>
+            <div className='space-y-2'>
+              <Label htmlFor='name' className='text-sm font-medium flex items-center gap-2'>
+                <UserIcon size={16}/> Full Name
+              </Label>
+              <Input id='name' type='text' placeholder='enter your name' className='h-11' value={name} onChange={(e)=> setName(e.target.value)}></Input>
+            </div>
+           </div>
+           
+            <div className='space-y-2'>
+              <Label htmlFor='phone' className='text-sm font-medium flex items-center gap-2'>
+                <PhoneIcon size={16}/> Phone Number
+              </Label>
+              <Input id='phone' type='number' placeholder='enter your phone number' className='h-11' value={phoneNumber} onChange={(e)=> setPhoneNumber(e.target.value)}></Input>
+            </div>
+            {user.role === 'jobseeker' && 
+            <div className='space-y-2 w-full'>
+              <Label htmlFor='bio' className='text-sm font-medium flex items-center gap-2'>
+                <Notebook size={16}/> Bio
+              </Label>
+              <textarea id='bio'  placeholder='enter your Bio' className='h-11 w-full' value={bio} onChange={(e)=> setBio(e.target.value)}></textarea>
+            </div>
+
+            }
+           <DialogFooter>
+            <Button disabled={btnloading} onClick={updataProfilehandler} className='w-full h-11' type='submit' variant={'default'}>{btnloading?'saving changes...':'Save Changes'}</Button>
+           </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
