@@ -12,7 +12,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const [isAuth,setIsAuth] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(true);
     const [btnloading,setBtnLoading] = useState<boolean>(false);
-    const fethcUser = async()=>{
+    const fetchUser = async()=>{
         setLoading(true);
         try{
             const {data} = await axios.get(`${user_service}/api/user/profile` ,{withCredentials:true});
@@ -28,6 +28,19 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
         setLoading(false);
         
     }
+    }
+    const updateProfilePic = async(formData:any)=>{
+        setLoading(true);
+        try{
+            const {data} = await axios.patch('http://localhost:5003/api/user/profile/pic',formData,{withCredentials:true});
+            toast.success(data.message);
+            fetchUser();    // it will updata the user states to new updated one 
+        }catch(error:any){
+            toast.error(error.response.data.message || "Something went wrong");
+        }
+        finally{
+            setLoading(false);
+        }
     }
     const logout = async()=>{
         setLoading(true);
@@ -45,10 +58,10 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
         }
     }
     useEffect(()=>{
-        fethcUser();
+        fetchUser();
     },[])
     return(
-        <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading,logout}}>
+        <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading,logout,fetchUser,updateProfilePic}}>
             {children}
             <Toaster/>
         </AppContext.Provider>

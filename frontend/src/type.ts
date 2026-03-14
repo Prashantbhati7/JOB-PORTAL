@@ -85,8 +85,15 @@ export interface AppContextType{
     setIsAuth:React.Dispatch<React.SetStateAction<boolean>>;
     setLoading:React.Dispatch<React.SetStateAction<boolean>>;
     logout:()=>Promise<void>;
+    fetchUser:()=>Promise<void>;
+    updateProfilePic:(formData:any)=>Promise<void>;
 }
 
 export interface AppProviderProps{
     children:React.ReactNode;
+}
+
+export interface AccountProps{
+    user:User;
+    isYourAccount:boolean;
 }
