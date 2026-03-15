@@ -78,6 +78,7 @@ const updateJob = AsyncHandler(async (req, res, next) => {
     return res.status(200).json({ "message": "Job Updated Successfully", "job": updatedJob });
 });
 const getAllComapny = AsyncHandler(async (req, res, next) => {
+    console.log("got req to jobs");
     const user = req.user;
     if (!user)
         throw new ApiError(401, "Not Authenticated");

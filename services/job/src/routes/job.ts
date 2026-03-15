@@ -7,7 +7,7 @@ const router = Router();
 
 router.route('/company').post(isAuth,uploadFile,createCompany)
 router.route('/company/:company_id').delete(isAuth,deleteCompany)
-router.route('/company/:id').get(isAuth,getCompanyDetails);
+router.route('/company/:id').get(getCompanyDetails);
 router.route('/company').get(isAuth,getAllComapny);
 router.route('/job').post(isAuth,createJob)
 router.route('/job').get(getAllActiveJobs);

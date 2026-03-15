@@ -67,6 +67,7 @@ const updateJob = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
 })
 
 const getAllComapny = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    console.log("got req to jobs")
     const user = req.user;
     if (!user) throw new ApiError(401,"Not Authenticated");
     const companies = await sql`SELECT * FROM companies WHERE recruiter_id = ${user.user_id}`;

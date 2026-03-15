@@ -34,15 +34,16 @@ export const connectKafka = async()=>{
         return producer;
     }catch(error){
         console.log("Failed to connect Kafka: ",error);
-        throw new ApiError(404,"Kafka not connected");
+      //  throw new ApiError(404,"Kafka not connected");
     }
+    
 }
 
 
 export const PublishToTopic = async(topic:string,message:any)=>{
     if (!producer) {
         console.log("Kafka Producer is not Initialized  ");
-        throw new ApiError(404,"Kafka Producer is not Initialized");
+       // throw new ApiError(404,"Kafka Producer is not Initialized");
     }
     try{
         await producer.send({

@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Info from "../(components)/info";
-import Skills from "@/components/Skills";
+import Skills from "@/app/account/(components)/Skills";
 
 
 const Userpage = () => {

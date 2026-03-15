@@ -4,7 +4,8 @@ import { UseAppData } from '@/context/appContext'
 import React from 'react'
 import Info from './(components)/info';
 import { redirect } from 'next/navigation';
-import Skills from '@/components/Skills';
+import Skills from '@/app/account/(components)/Skills';
+import Company from '@/app/account/(components)/company';
 
 const AccountPage = () => {
     const {isAuth,user,loading} = UseAppData();
@@ -16,6 +17,7 @@ const AccountPage = () => {
    {user && <div className='w-[90%] md:w-[60%] m-auto'>
      <Info user={user} isYourAccount={true} />
      {user.role=='jobseeker' && <Skills user={user} isYourAccount={true}/> }
+     {user.role=='recruiter' && <Company />}
     </div>}
    </>
   )

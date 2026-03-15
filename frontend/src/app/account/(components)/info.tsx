@@ -151,8 +151,8 @@ const Info:React.FC<AccountProps> = ({user,isYourAccount}) => {
                    <Link href={user.resume} className='text-sm text-blue-500 hover:underline' target='_blank'>View Resume </Link>
                 </div>
                 {/* edit button */}
-                <Button variant={'outline'} size={'sm'} onClick={handleResumeClick} className='gap-2 rounded-2xl mx-2'>Update</Button>
-                <input type="file" className='hidden' accept='application/pdf' ref={resumeRef} onChange={changeResume} />
+                { isYourAccount && <> <Button variant={'outline'} size={'sm'} onClick={handleResumeClick} className='gap-2 rounded-2xl mx-2'>Update</Button>
+                <input type="file" className='hidden' accept='application/pdf' ref={resumeRef} onChange={changeResume} /> </>}
               </div>
             </div>
            }
