@@ -13,6 +13,7 @@ export const isAuth = async (req, res, next) => {
         if (user.length === 0)
             throw new ApiError(404, "User not Authenticated ");
         req.user = user[0];
+        console.log("user authenticated successfully");
         next();
     }
     catch (error) {

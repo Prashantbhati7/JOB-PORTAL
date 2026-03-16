@@ -86,9 +86,9 @@ const Company = () => {
     useEffect(()=>{
       fetchCompanies();
     },[])
-  if (loading){
-    return <div className="max-w-7xl text-center text-2xl mx-auto px-4 py-6"> <span className="animate-ping">Loading....</span> </div>
-  }
+  // if (loading){
+  //   return <div className="max-w-7xl text-center text-2xl mx-auto px-4 py-6"> <span className="animate-ping">Loading....</span> </div>
+  // }
   return (
    
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -104,10 +104,10 @@ const Company = () => {
             <CardDescription className="text-sm mt-1 text-primary">
               Manage your registered comapnies ({companies.length}/3)
             </CardDescription>
-        {companies.length<3 && <Button className="gap-2" onClick={openDialog}><Plus size={18}></Plus> Add Company</Button>}
+        { companies.length<3 && <Button className="gap-2" onClick={openDialog}><Plus size={18}></Plus> Add Company</Button>}
           </div>
         </div>
-        {companies.length>0 ? 
+        { loading ? <div className="text-center w-full "> <LoaderCircle className="w-full mx-auto text-center animate-spin " size={32}/> </div> :companies.length>0 ? 
         <div className="grid gap-4">
           { companies.map((c)=> (<div key={c.company_id} className="flex items-center gap-4 p-4 rounded-lg border-2 hover:border-blue-500 transition-all bg-background">
               <div className="h-16 w-16 rounded-full border-2 overflow-hidden shrink-0 bg-background ">

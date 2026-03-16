@@ -5,13 +5,16 @@ import { Card } from "@/components/ui/card";
 import { UseAppData } from "@/context/appContext";
 import { Company, Job} from "@/type";
 import axios from "axios";
-import { Briefcase, Globe } from "lucide-react";
+import { Briefcase, Building2, Check, CheckCircle, Clock, DollarSign, Eye, FileText, Globe, Laptop, LocateIcon, MapPin, Pencil, Plus, Trash, Users, XCircle } from "lucide-react";
 import Link from "next/link";
 
 import { useParams } from "next/navigation";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {  useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 const  CompanyPage= () => {
@@ -51,7 +54,7 @@ const  CompanyPage= () => {
     const addJobHandler = async()=>{
         setBtnLoading(true);
         try{
-            if (!title.trim() || !description.trim() || !salary.trim() || !location.trim() || !openings.trim() || !job_type.trim() || !work_location.trim()) {
+            if (!title.trim() || !description.trim() || !location.trim() || !job_type.trim() || !work_location.trim()) {
                 toast.error("please fill all the fields");
                 return;
             }
@@ -63,10 +66,11 @@ const  CompanyPage= () => {
                 openings:Number(openings),
                 job_type,
                 role,
-                comapny_id:id,
+                company_id:Number(id),
                 work_location,
                 isActive
             }
+            
             const {data} = await axios.post('http://localhost:5004/api/job',jobData,{withCredentials:true});
             toast.success(data.message);
             clearData();
@@ -83,10 +87,10 @@ const  CompanyPage= () => {
         setSelectedJob(job);
         setTitle(job.title);
         setDescription(job.description); 
-        setSalary(String(job.salary || ""));
+        setSalary(job.salary?.toString() || '');
         setLocation(job.location || "");
         setrole(job.role);
-        setOpenings(job.openings.toString());
+        setOpenings(job.openings?.toString() || '');
         setJob_type(job.job_type);
         setWork_location(job.work_location);
         setIsActive(job.is_active);
@@ -112,7 +116,8 @@ const  CompanyPage= () => {
                 job_type,
                 role,
                 work_location,
-                is_active:isActive
+                is_active:isActive,
+                company_id:Number(id)
             }
             const {data} = await axios.put(`http://localhost:5004/api/job/${selectedJob.job_id}`,updateData,{withCredentials:true});
             toast.success(data.message);
@@ -167,7 +172,7 @@ const  CompanyPage= () => {
             <div className="px-8 pb-8">
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-end -mt-16">
                     <div className="w-32 h-32 rounded-2xl border-4 border-background overflow-hidden shadow-xl bg-background shrink-0">
-                        <img src={company.logo} alt={company.name} className='w-full h-full object-cover'> </img>
+                        <img src={company.logo} alt={company.name} className='w-full h-full object-cover' /> 
                     </div>
                     <div className="flex-1 md:mb-4 ">
                         <h1 className="text-3xl font-bold mb-2">{company.name}</h1>
@@ -185,10 +190,247 @@ const  CompanyPage= () => {
                                 <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                                     <Briefcase size={20} className="text-blue-600"></Briefcase>
                                 </div>
+
                             </div>
+                            <h2 className="text-2xl font-bold">Open Positions</h2>
+                            <p className="text-sm opacity-70">{company.jobs?.length || 0 } active Jobs {company.jobs?.length ? 's':''} </p>
                         </div>
                     </div>
+                    {isRecuiterOwner && 
+                    <>
+                    <DialogTrigger asChild>
+                        <Button className="gap-2"><Plus size={18}/>Post New Job</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle className="text-2xl flex items-center gap-2">Post a new job</DialogTitle>
+                        </DialogHeader>
+                         <div className="space-y-2">
+                            <Label htmlFor="title" className="text-sm font-medium flex items-center gap-2"><Briefcase size={16}/>Job Title </Label>
+                            <Input id="title" type="text" placeholder="enter job title" className="h-11" value={title} onChange={(e)=>setTitle(e.target.value)}/>
+
+                        </div>
+                            <div className="space-y-2">
+                            <Label htmlFor="description" className="text-sm font-medium flex items-center gap-2"><FileText size={16}/>  Description </Label>
+                            <Input id="description" type="text" placeholder="enter description" className="h-11" value={description} onChange={(e)=>setDescription(e.target.value)}/>
+
+                        </div>
+                        <div className="space-y-2">
+                           <Label htmlFor="role" className="text-sm font-medium flex items-center gap-2"><Building2 size={16}/>  Role/Department </Label>
+                            <Input id="role" type="text" placeholder="enter Job role" className="h-11" value={role} onChange={(e)=>setrole(e.target.value)}/>
+                         </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="salary" className="text-sm font-medium flex items-center gap-2"><DollarSign size={16}/>Salary</Label>
+                            <Input id="salary" type="number"  placeholder="enter salary"   className="cursor-pointer h-11" value={salary}   onChange={(e)=>setSalary((e.target.value))}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="openings" className="text-sm font-medium flex items-center gap-2"><Users size={16}/>Openings</Label>
+                            <Input id="openings" type="number"  placeholder="enter openings"   className="cursor-pointer h-11" value={openings}   onChange={(e)=>setOpenings((e.target.value))}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="location" className="text-sm font-medium flex items-center gap-2"><MapPin size={16}/>Location </Label>
+                            <Input id="location" type="text"  placeholder="enter Location"   className="cursor-pointer h-11" value={location}   onChange={(e)=>setLocation(e.target.value)}/>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                           <div className="space-y-2">
+                                 <Label htmlFor="job_type" className="text-sm font-medium flex items-center gap-1"> <Clock size={16}/> Job Type </Label>
+                                <div className="relative w-full">
+                                
+                                    <Select onValueChange={(val: string) => setJob_type(val)} value={job_type}>
+                                    <SelectTrigger className="h-11 w-full">
+                                        <SelectValue placeholder=" Select Job Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="Full-time">Full-time</SelectItem>
+                                         <SelectItem value="Part-time">Part-time</SelectItem>
+                                        <SelectItem value="Contract">Contract</SelectItem>
+                                        <SelectItem value="Internship">Internship</SelectItem>
+                                    </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                </div>  
+                            </div>  
+                             <div className="space-y-2">
+                                 <Label htmlFor="work_location" className="text-sm font-medium flex items-center gap-1"> <Laptop size={16}/> Work Location </Label>
+                                <div className="relative w-full">
+                                
+                                    <Select onValueChange={(val: string) => setWork_location(val)} value={work_location}>
+                                    <SelectTrigger className="h-11 w-full">
+                                        <SelectValue placeholder=" Select work location" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="On-site">On-site</SelectItem>
+                                         <SelectItem value="Remote">Remote</SelectItem>
+                                        <SelectItem value="Hybrid">Hybrid</SelectItem>
+                                         
+                                    </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                </div>  
+                            </div>                        
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button ref={addModalRef} variant={'outline'}>Cancel</Button>
+                            </DialogClose>
+                            <Button disabled={btnloading} onClick={addJobHandler} className="w-full gap-2 h-11">{btnloading?'saving changes...':'Post Job'}</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                    </>}
+                    <div className="p-6">
+                        {company.jobs && company.jobs.length>0 ?
+                        <div className="space-y-4">
+                            {company.jobs.map((job)=>(
+                                <div key={job.job_id} className=" p-5 rounded-lg border-2 hover:border-blue-500 transition-all bg-background">
+                                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                                        <div className="flex-1 min-w-0"> 
+                                            <div className="flex items-center gap-3 mb-3 flex-wrap ">
+                                                <h3 className="text-xl font-semibold">{job.title}</h3>
+                                                <span className={`text-xs px-3 py-1 rounded-full flex items-center gap-1 ${job.is_active ?"bg-green-100 dark:bg-green-900/30 text-green-600":"bg-gray-100 dark:bg-gray-800 text-gray-600"}`}>{job.is_active ? <CheckCircle size={14}/> :<XCircle size={14}/>} {job.is_active ? 'Active' : 'Inactive'} </span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+                                                <div className="flex items-center gap-2 opacity-70">
+                                                    <Building2 size={16}/>
+                                                    <span>{job.role}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 opacity-70">
+                                                  <DollarSign size={16}/>
+                                                  <span>{job.salary ? `₹${job.salary.toLocaleString()}`:"Not Disclosed"}</span>  
+                                                </div>
+                                                <div className="flex items-center gap-2 opacity-70">
+                                                    <MapPin size={16}/>
+                                                    <span>{job.location}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 opacity-70">
+                                                    <Laptop size={16}/>
+                                                    <span>{job.job_type}</span>
+                                                
+                                                </div>
+                                                <div className="flex items-center gap-2 opacity-70">
+                                                    <Users size={16}/>
+                                                    <span>{job.openings} openings</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Link href={`/jobs/${job.job_id}`}>
+                                              <Button variant={'outline'} size={'sm'} className="gap-2"><Eye size={16}/>View</Button>  
+                                            </Link>
+                                            {isRecuiterOwner && <>
+                                            <Button  variant={'outline'} size={'sm'}  onClick={()=> handleOpenUpdateModal(job)}> <Pencil size={16}/>Edit </Button>
+                                            {/* <Button variant={'destructive'} size={'sm'} onClick={()=>deleteHanlder(job.job_id)} disabled={btnloading}> <Trash size={16}/>  </Button> */}
+                                            </>}
+                                        </div>
+                                    </div>
+                            </div>
+                            ))}
+                        </div> :<div className="text-center py-12">
+                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
+                                <Briefcase size={32} className="opacity-40"/> 
+
+                            </div>
+                            <p className="text-base opacity-70 mb-2">No Jobs posted yet </p>
+                        </div>}
+                    </div>
                 </Card>
+            </Dialog>
+            <Dialog open={isUpdatedModalOpen} onOpenChange={setIsUpdatedModalOpen}>
+                  <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle className="text-2xl flex items-center gap-2">Update the job</DialogTitle>
+                        </DialogHeader>
+                         <div className="space-y-2">
+                            <Label htmlFor="title" className="text-sm font-medium flex items-center gap-2"><Briefcase size={16}/>Job Title </Label>
+                            <Input id="title" type="text" placeholder="enter job title" className="h-11" value={title} onChange={(e)=>setTitle(e.target.value)}/>
+
+                        </div>
+                            <div className="space-y-2">
+                            <Label htmlFor="description" className="text-sm font-medium flex items-center gap-2"><FileText size={16}/>  Description </Label>
+                            <Input id="description" type="text" placeholder="enter description" className="h-11" value={description} onChange={(e)=>setDescription(e.target.value)}/>
+
+                        </div>
+                        <div className="space-y-2">
+                           <Label htmlFor="role" className="text-sm font-medium flex items-center gap-2"><Building2 size={16}/>  Role/Department </Label>
+                            <Input id="role" type="text" placeholder="enter Job role" className="h-11" value={role} onChange={(e)=>setrole(e.target.value)}/>
+                         </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="salary" className="text-sm font-medium flex items-center gap-2"><DollarSign size={16}/>Salary</Label>
+                            <Input id="salary" type="number"  placeholder="enter salary"   className="cursor-pointer h-11" value={salary}   onChange={(e)=>setSalary((e.target.value))}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="openings" className="text-sm font-medium flex items-center gap-2"><Users size={16}/>Openings</Label>
+                            <Input id="openings" type="number"  placeholder="enter openings"   className="cursor-pointer h-11" value={openings}   onChange={(e)=>setOpenings((e.target.value))}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="location" className="text-sm font-medium flex items-center gap-2"><MapPin size={16}/>Location </Label>
+                            <Input id="location" type="text"  placeholder="enter Location"   className="cursor-pointer h-11" value={location}   onChange={(e)=>setLocation(e.target.value)}/>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                           <div className="space-y-2">
+                                 <Label htmlFor="job_type" className="text-sm font-medium flex items-center gap-1"> <Clock size={16}/> Job Type </Label>
+                                <div className="relative w-full">
+                                
+                                    <Select onValueChange={(val: string) => setJob_type(val)} value={job_type}>
+                                    <SelectTrigger className="h-11 w-full">
+                                        <SelectValue placeholder=" Select Job Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="Full-time">Full-time</SelectItem>
+                                         <SelectItem value="Part-time">Part-time</SelectItem>
+                                        <SelectItem value="Contract">Contract</SelectItem>
+                                        <SelectItem value="Internship">Internship</SelectItem>
+                                    </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                </div>  
+                            </div>  
+
+                             <div className="space-y-2">
+                                 <Label htmlFor="work_location" className="text-sm font-medium flex items-center gap-1"> <Laptop size={16}/> Work Location </Label>
+                                <div className="relative w-full">
+                                
+                                    <Select onValueChange={(val: string) => setWork_location(val)} value={work_location}>
+                                    <SelectTrigger className="h-11 w-full">
+                                        <SelectValue placeholder=" Select work location" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="On-site">On-site</SelectItem>
+                                         <SelectItem value="Remote">Remote</SelectItem>
+                                        <SelectItem value="Hybrid">Hybrid</SelectItem>
+                                         
+                                    </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                </div>  
+                            </div> 
+                                <div className="space-y-2">
+                                    <Label htmlFor="update-is_active" className="text-sm font-medium flex items-center gap-2 ">{isActive?<CheckCircle size={16} className="text-green-600"/> : <XCircle size={16} className="text-gray-500"/>}</Label>
+                                     <Select onValueChange={(val: string) => setIsActive(val==='true'?true:false)} value={isActive?'true':'false'} >
+                                     <SelectTrigger className="h-11 w-full">
+                                        <SelectValue placeholder=" Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="true">Active</SelectItem>
+                                         <SelectItem value="false">Inactive</SelectItem>
+                                        
+                                    </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                </div>
+
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button ref={addModalRef} variant={'outline'}>Cancel</Button>
+                            </DialogClose>
+                            <Button disabled={btnloading} onClick={UpdateJobHandler} className="w-full gap-2 h-11">{btnloading?'Updating job...':'Update Job'}</Button>
+                        </DialogFooter>
+                    </DialogContent>           
             </Dialog>
          </div>}
     </div>

@@ -43,6 +43,8 @@ const deleteCompany = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
 
 const createJob = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     const user = req.user;
+    console.log("job creation request recieved")
+    console.log("data recieved ",req.body);
     if (!user ) throw new ApiError(401,"Not Authenticated");
     if (user.role==='jobseeker') throw new ApiError(403,"Not Authorized to create job");
     const {title,description,salary,location,job_type,openings,role,work_location,company_id} = req.body;
@@ -150,6 +152,16 @@ const updateApplication = AsyncHandler(async(req:AuthenticatedRequest,res,next)=
     PublishToTopic("send-mail",message).catch((error)=>console.error("Failed to publish message to Kafka : ",error));
     return res.status(200).json({"message":"Application Updated Successfully","job":job,"application":updatedApplication});
 })
+const deleteJob = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
+    const user = req.user;
+    if (!user) throw new ApiError(401,"Not Authenticated");
+    const {id} = req.params;
+    const [job] = await sql`SELECT * FROM jobs WHERE job_id = ${id}`;
+    if (!job) throw new ApiError(404,"Job Doesn't Exists");
+    const isOwner = user.user_id === job.recruiter_id;
+    if (!isOwner) throw new ApiError(403,"Not Authorized ");
+    await sql`DELETE FROM jobs WHERE job_id = ${id}`;
+    return res.status(204).json({'message':'Job deleted successfully'});
+})
 
-
-export {createCompany,deleteCompany,createJob,updateJob,getAllComapny,getCompanyDetails,getAllActiveJobs,getSingleJob,getAllApplicationsForJob,updateApplication};
+export {createCompany,deleteCompany,createJob,updateJob,getAllComapny,getCompanyDetails,getAllActiveJobs,getSingleJob,getAllApplicationsForJob,updateApplication,deleteJob};
