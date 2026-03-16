@@ -116,7 +116,7 @@ const forgotPassword = AsyncHandler(async(req,res,next)=>{
         email:user.email,
         type:'reset'
     },process.env.JWT_SECRET as string,{expiresIn:'15m'});
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
     await redisClient.set(`forgot:${email}`,resetToken,{EX:900});      // 900 sec - 15 min
     const message = {
         to:email,

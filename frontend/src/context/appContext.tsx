@@ -15,13 +15,17 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const fetchUser = async()=>{
         setLoading(true);
         try{
-            const {data} = await axios.get(`${user_service}/api/user/profile` ,{withCredentials:true});
-            console.log("user is ",data);
-            setUser(data.user);
+             
+            const response = await axios.get(`http://localhost:5002/api/user/profile` ,{withCredentials:true});
+            if (!response.data.user) {
+                setIsAuth(false);
+                return;
+            }
+            setUser(response.data.user);
             setIsAuth(true);
             return;
     }catch(error){
-        console.log(error);
+        console.log("error in fetching user ",error);
         setIsAuth(false);
         return;
     }finally{
