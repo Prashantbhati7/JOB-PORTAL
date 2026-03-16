@@ -1,17 +1,21 @@
 "use client"
 import Loading from '@/components/loading';
 import { UseAppData } from '@/context/appContext'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Info from './(components)/info';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Skills from '@/app/account/(components)/Skills';
 import Company from '@/app/account/(components)/company';
 
 const AccountPage = () => {
     const {isAuth,user,loading} = UseAppData();
+    const router = useRouter();
+    useEffect(()=>{
+      if (!isAuth && !loading){
+        router.push('/login');
+      }
+    },[isAuth,loading,router])
     if (loading) return <Loading/>
-    if (!isAuth) return redirect('/login');
-    if (!user) return redirect('/login');
   return (
    <>
    {user && <div className='w-[90%] md:w-[60%] m-auto'>

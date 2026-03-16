@@ -91,6 +91,9 @@ export interface AppContextType{
     updateUser:(name:string,phone_number:string,bio:string)=>Promise<void>;
     addSkill:(skill:string,setSkill:React.Dispatch<React.SetStateAction<string | "">>)=>Promise<void>;
     removeSkill:(skill:string)=>Promise<void>;
+    applyJob:(job_id:number)=>Promise<void>;
+    applications:Application[] | null;
+    fetchApplications:()=>Promise<void>;
 }
 
 export interface AppProviderProps{
@@ -114,6 +117,8 @@ export interface Job{
     company_id:number;
     posted_by_recruiter_id:number;
     created_at:string;
+    company_name:string;
+    company_logo:string;
     is_active:boolean;
 }
 

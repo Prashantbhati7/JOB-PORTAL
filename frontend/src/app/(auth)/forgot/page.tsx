@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +18,7 @@ import toast from "react-hot-toast";
 const ForgotPage = () => {
     const [email,setEmail] = useState("");
     const [btnloading,setBtnLoading] = useState(false);
-    const {isAuth} = UseAppData();
+    const {isAuth,loading} = UseAppData();
     const router = useRouter();
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -39,10 +40,11 @@ const ForgotPage = () => {
         }
     }
     useEffect(()=>{
-        if(isAuth){
+        if(!loading && isAuth){
             router.push('/');
         }
     })
+    if (loading) return <Loading/>
   return (
  <div className="min-h-[90vh] flex items-center justify-center px-4 py-12 md:px-6 lg:px-8">
         <div className="w-full max-w-md">

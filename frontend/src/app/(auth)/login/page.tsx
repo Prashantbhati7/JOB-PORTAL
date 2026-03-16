@@ -18,7 +18,7 @@ const Page = () => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [BtnLoading,setBtnLoading] = useState(false);
-    const {isAuth,setUser,loading,setIsAuth,setLoading }= UseAppData();
+    const {isAuth,setUser,loading,setIsAuth,setLoading ,fetchApplications}= UseAppData();
         if (loading) return <Loading/>
     if (isAuth){
       return redirect('/');
@@ -38,6 +38,7 @@ const Page = () => {
           console.log("user is ",response.data.user);
           setUser(response.data.user);
           setIsAuth(true);
+          fetchApplications();
           setLoading(false);
           toast.success(response.data.message);
           // Cookies.set('token', response.data.token,{expires: 15,secure:true,path:'/'});

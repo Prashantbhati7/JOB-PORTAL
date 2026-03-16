@@ -1,6 +1,6 @@
 "use client";
 
-import { AppProviderProps,AppContextType ,User } from "@/type";
+import { AppProviderProps,AppContextType ,User, Application } from "@/type";
 import axios from "axios";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -15,12 +15,8 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const fetchUser = async()=>{
         setLoading(true);
         try{
-             
-            const response = await axios.get(`http://localhost:5002/api/user/profile` ,{withCredentials:true});
-            if (!response.data.user) {
-                setIsAuth(false);
-                return;
-            }
+            const response = await axios.get(`http://localhost:5003/api/user/profile` ,{withCredentials:true});
+            console.log("response is ",response);
             setUser(response.data.user);
             setIsAuth(true);
             return;
@@ -115,11 +111,39 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
             setLoading(false);
         }
     }
+    const applyJob = async(job_id:number)=>{
+        setBtnLoading(true);
+        try{
+            
+            const {data} = await axios.post(`${user_service}/api/user/job`,{job_id},{withCredentials:true});
+            toast.success(data.message || "Job applied successfully");
+            
+        }catch(error:any){
+            console.log(error);
+            toast.error( error.response?.data?.message ||"Something went wrong");
+        }finally{
+            setBtnLoading(false);
+        }
+    }
+    const [applications,setApplications] = useState<Application[]|null>(null);
+
+    const fetchApplications = async()=>{
+        try{
+            const {data} = await axios.get(`${user_service}/api/user/job`,{withCredentials:true});
+            setApplications(data.applications);
+        }catch(error:any){
+            console.log(error);
+            
+        }
+    }
+
+
     useEffect(()=>{
         fetchUser();
+        fetchApplications();
     },[])
     return(
-        <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading,logout,fetchUser,updateProfilePic,updateResume,updateUser,addSkill,removeSkill}}>
+        <AppContext.Provider value={{user,setUser,btnloading,isAuth,setIsAuth,loading,setLoading,logout,fetchUser,updateProfilePic,updateResume,updateUser,addSkill,removeSkill,applyJob,applications,fetchApplications}}>
             {children}
             <Toaster/>
         </AppContext.Provider>
@@ -136,10 +160,10 @@ const UseAppData = ():AppContextType =>{
     
 }
 
-const utils_service = "http://localhost:5001";
-const auth_service = "http://localhost:5002";
-const user_service = "http://localhost:5003";
-const job_service = "http://localhost:5004";
+export  const utils_service = "http://localhost:5001";
+export  const auth_service = "http://localhost:5002";
+export  const user_service = "http://localhost:5003";
+export  const job_service = "http://localhost:5004";
 
 
 export {AppContext,AppProvider,UseAppData}
