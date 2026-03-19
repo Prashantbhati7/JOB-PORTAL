@@ -1,0 +1,183 @@
+# File Tree: JobPortal
+
+**Generated:** 17/03/2026, 19:36:51
+**Root Path:** `/Users/prashant/JobPortal`
+
+```
+├── 📁 frontend
+│   ├── 📁 public
+│   │   ├── 🖼️ file.svg
+│   │   ├── 🖼️ globe.svg
+│   │   ├── 🖼️ next.svg
+│   │   ├── 🖼️ user.png
+│   │   ├── 🖼️ vercel.svg
+│   │   └── 🖼️ window.svg
+│   ├── 📁 src
+│   │   ├── 📁 app
+│   │   │   ├── 📁 (auth)
+│   │   │   │   ├── 📁 forgot
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 login
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   ├── 📁 register
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   └── 📁 reset
+│   │   │   │       └── 📁 [token]
+│   │   │   │           └── 📄 page.tsx
+│   │   │   ├── 📁 about
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📁 account
+│   │   │   │   ├── 📁 (components)
+│   │   │   │   │   ├── 📄 Skills.tsx
+│   │   │   │   │   ├── 📄 appliedJobs.tsx
+│   │   │   │   │   ├── 📄 company.tsx
+│   │   │   │   │   └── 📄 info.tsx
+│   │   │   │   ├── 📁 [id]
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📁 company
+│   │   │   │   └── 📁 [id]
+│   │   │   │       └── 📄 page.tsx
+│   │   │   ├── 📁 jobs
+│   │   │   │   ├── 📁 [id]
+│   │   │   │   │   └── 📄 page.tsx
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📁 payment
+│   │   │   │   └── 📁 success
+│   │   │   │       └── 📁 [id]
+│   │   │   │           └── 📄 page.tsx
+│   │   │   ├── 📁 subscribe
+│   │   │   │   └── 📄 page.tsx
+│   │   │   ├── 📄 favicon.ico
+│   │   │   ├── 🎨 globals.css
+│   │   │   ├── 📄 layout.tsx
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 components
+│   │   │   ├── 📁 ui
+│   │   │   │   ├── 📄 avatar.tsx
+│   │   │   │   ├── 📄 button.tsx
+│   │   │   │   ├── 📄 card.tsx
+│   │   │   │   ├── 📄 dialog.tsx
+│   │   │   │   ├── 📄 dropdown-menu.tsx
+│   │   │   │   ├── 📄 input.tsx
+│   │   │   │   ├── 📄 label.tsx
+│   │   │   │   ├── 📄 popover.tsx
+│   │   │   │   └── 📄 select.tsx
+│   │   │   ├── 📄 Hero.tsx
+│   │   │   ├── 📄 JobCard.tsx
+│   │   │   ├── 📄 Navbar.tsx
+│   │   │   ├── 📄 ResumeAnalyser.tsx
+│   │   │   ├── 📄 Skills.tsx
+│   │   │   ├── 📄 career-guide.tsx
+│   │   │   ├── 📄 loading.tsx
+│   │   │   ├── 📄 mode-toggle.tsx
+│   │   │   ├── 📄 scriptLoader.tsx
+│   │   │   └── 📄 theme-provider.tsx
+│   │   ├── 📁 context
+│   │   │   └── 📄 appContext.tsx
+│   │   ├── 📁 lib
+│   │   │   └── 📄 utils.ts
+│   │   └── 📄 type.ts
+│   ├── ⚙️ .gitignore
+│   ├── 📝 README.md
+│   ├── ⚙️ components.json
+│   ├── 📄 eslint.config.mjs
+│   ├── 📄 next-env.d.ts
+│   ├── 📄 next.config.ts
+│   ├── ⚙️ package-lock.json
+│   ├── ⚙️ package.json
+│   ├── 📄 postcss.config.mjs
+│   └── ⚙️ tsconfig.json
+└── 📁 services
+    ├── 📁 auth
+    │   ├── 📁 src
+    │   │   ├── 📁 controllers
+    │   │   │   └── 📄 auth.ts
+    │   │   ├── 📁 middleware
+    │   │   │   └── 📄 multer.ts
+    │   │   ├── 📁 routes
+    │   │   │   └── 📄 auth.ts
+    │   │   ├── 📁 utils
+    │   │   │   ├── 📄 ApiError.ts
+    │   │   │   ├── 📄 AsyncHandler.ts
+    │   │   │   ├── 📄 buffer.ts
+    │   │   │   └── 📄 db.ts
+    │   │   ├── 📄 app.ts
+    │   │   ├── 📄 index.ts
+    │   │   ├── 📄 producer.ts
+    │   │   └── 📄 template.ts
+    │   ├── ⚙️ .gitignore
+    │   ├── ⚙️ package-lock.json
+    │   ├── ⚙️ package.json
+    │   └── ⚙️ tsconfig.json
+    ├── 📁 job
+    │   ├── 📁 src
+    │   │   ├── 📁 controllers
+    │   │   │   └── 📄 job.ts
+    │   │   ├── 📁 middleware
+    │   │   │   ├── 📄 auth.ts
+    │   │   │   └── 📄 multer.ts
+    │   │   ├── 📁 routes
+    │   │   │   └── 📄 job.ts
+    │   │   ├── 📁 utils
+    │   │   │   ├── 📄 ApiError.ts
+    │   │   │   ├── 📄 AsyncHandler.ts
+    │   │   │   ├── 📄 buffer.ts
+    │   │   │   └── 📄 db.ts
+    │   │   ├── 📄 app.ts
+    │   │   ├── 📄 index.ts
+    │   │   ├── 📄 producer.ts
+    │   │   └── 📄 template.ts
+    │   ├── ⚙️ .gitignore
+    │   ├── ⚙️ package-lock.json
+    │   ├── ⚙️ package.json
+    │   └── ⚙️ tsconfig.json
+    ├── 📁 payment
+    │   ├── 📁 src
+    │   │   ├── 📁 controller
+    │   │   │   └── 📄 payment.ts
+    │   │   ├── 📁 middleware
+    │   │   │   └── 📄 auth.ts
+    │   │   ├── 📁 routes
+    │   │   │   └── 📄 payment.ts
+    │   │   ├── 📁 utils
+    │   │   │   ├── 📄 ApiError.ts
+    │   │   │   ├── 📄 AsyncHandler.ts
+    │   │   │   └── 📄 db.ts
+    │   │   └── 📄 index.ts
+    │   ├── ⚙️ .gitignore
+    │   ├── ⚙️ package-lock.json
+    │   ├── ⚙️ package.json
+    │   └── ⚙️ tsconfig.json
+    ├── 📁 user
+    │   ├── 📁 src
+    │   │   ├── 📁 controller
+    │   │   │   └── 📄 user.controller.ts
+    │   │   ├── 📁 middleware
+    │   │   │   ├── 📄 auth.ts
+    │   │   │   └── 📄 multer.ts
+    │   │   ├── 📁 routes
+    │   │   │   └── 📄 user.ts
+    │   │   ├── 📁 utils
+    │   │   │   ├── 📄 ApiError.ts
+    │   │   │   ├── 📄 AsyncHandler.ts
+    │   │   │   ├── 📄 buffer.ts
+    │   │   │   └── 📄 db.ts
+    │   │   └── 📄 index.ts
+    │   ├── ⚙️ .gitignore
+    │   ├── ⚙️ package-lock.json
+    │   ├── ⚙️ package.json
+    │   └── ⚙️ tsconfig.json
+    └── 📁 utils
+        ├── 📁 src
+        │   ├── 📄 consumer.ts
+        │   ├── 📄 index.ts
+        │   └── 📄 route.ts
+        ├── ⚙️ .gitignore
+        ├── ⚙️ package-lock.json
+        ├── ⚙️ package.json
+        └── ⚙️ tsconfig.json
+```
+
+---
+*Generated by FileTree Pro Extension*

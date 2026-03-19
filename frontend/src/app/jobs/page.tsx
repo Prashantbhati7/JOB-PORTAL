@@ -77,7 +77,7 @@ const JobsPage = () => {
                             </div>}
                          </span>
                      </div> }
-                    {loading ? <div className='text-center w-full h-full flex items-center '> <Loader className='animate-spin w-full translate-y-20 mx-auto text-center' size={50}/> </div> :
+                    {loading ? <Loading/> :
                     <>
                     {jobs && jobs.length>0 ? <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
                         {jobs.map((job)=>
