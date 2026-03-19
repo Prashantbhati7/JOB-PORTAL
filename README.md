@@ -1,181 +1,203 @@
-# File Tree: EzHire
+# 🚀 EzHire — Scalable Job Portal with Microservices
 
+EzHire is a **microservices-based job portal** designed to simulate a real-world hiring platform with modular backend services and event-driven communication.
 
+---
+
+## 📌 What This Project Demonstrates
+
+- Microservices architecture (Auth, User, Job, Payment)
+- Kafka-based event-driven communication (practical use-case)
+- Full-stack system using Next.js + Node.js
+- Real-world flows like:
+  - Password reset
+  - Job application tracking
+  - Subscription payments
+
+---
+
+## ✨ Features
+
+### 👤 User
+- Register / Login
+- Profile (skills, experience, bio)
+- Apply to jobs
+- Track application status
+- AI Resume Analyzer
+- AI Career Guidance
+
+### 🧑‍💼 Recruiter
+- Post jobs
+- Manage applicants
+- Update job status
+
+### 🔐 Authentication
+- JWT-based authentication
+- Forgot Password / Reset Password flow
+
+### 💳 Payments
+- Razorpay subscription integration
+
+### 📩 Notifications (Kafka)
+- Password reset emails
+- Job status updates
+
+---
+
+## 🧰 Tech Stack
+
+### Frontend
+- Next.js
+- TypeScript
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+
+### Infrastructure
+- PostgreSQL
+- Redis
+- Apache Kafka
+
+---
+
+## 🏗️ Architecture Overview
+
+- Each service runs independently  
+- Kafka is used for **event-based communication (notifications only)**  
+- REST APIs used for core business logic  
+
+### Services:
+- Auth Service
+- User Service
+- Job Service
+- Payment Service
+- Kafka Utility (Consumer)
+
+---
+
+## 🔄 Kafka Usage (Important)
+
+Kafka is **not used everywhere**, only for:
+
+- Password reset email triggering  
+- Job status update notifications  
+
+This keeps services loosely coupled and avoids blocking API calls.
+
+---
+
+## 📁 Project Structure
 
 ```
-├── 📁 frontend
-│   ├── 📁 public
-│   │   ├── 🖼️ file.svg
-│   │   ├── 🖼️ globe.svg
-│   │   ├── 🖼️ next.svg
-│   │   ├── 🖼️ user.png
-│   │   ├── 🖼️ vercel.svg
-│   │   └── 🖼️ window.svg
-│   ├── 📁 src
-│   │   ├── 📁 app
-│   │   │   ├── 📁 (auth)
-│   │   │   │   ├── 📁 forgot
-│   │   │   │   │   └── 📄 page.tsx
-│   │   │   │   ├── 📁 login
-│   │   │   │   │   └── 📄 page.tsx
-│   │   │   │   ├── 📁 register
-│   │   │   │   │   └── 📄 page.tsx
-│   │   │   │   └── 📁 reset
-│   │   │   │       └── 📁 [token]
-│   │   │   │           └── 📄 page.tsx
-│   │   │   ├── 📁 about
-│   │   │   │   └── 📄 page.tsx
-│   │   │   ├── 📁 account
-│   │   │   │   ├── 📁 (components)
-│   │   │   │   │   ├── 📄 Skills.tsx
-│   │   │   │   │   ├── 📄 appliedJobs.tsx
-│   │   │   │   │   ├── 📄 company.tsx
-│   │   │   │   │   └── 📄 info.tsx
-│   │   │   │   ├── 📁 [id]
-│   │   │   │   │   └── 📄 page.tsx
-│   │   │   │   └── 📄 page.tsx
-│   │   │   ├── 📁 company
-│   │   │   │   └── 📁 [id]
-│   │   │   │       └── 📄 page.tsx
-│   │   │   ├── 📁 jobs
-│   │   │   │   ├── 📁 [id]
-│   │   │   │   │   └── 📄 page.tsx
-│   │   │   │   └── 📄 page.tsx
-│   │   │   ├── 📁 payment
-│   │   │   │   └── 📁 success
-│   │   │   │       └── 📁 [id]
-│   │   │   │           └── 📄 page.tsx
-│   │   │   ├── 📁 subscribe
-│   │   │   │   └── 📄 page.tsx
-│   │   │   ├── 📄 favicon.ico
-│   │   │   ├── 🎨 globals.css
-│   │   │   ├── 📄 layout.tsx
-│   │   │   └── 📄 page.tsx
-│   │   ├── 📁 components
-│   │   │   ├── 📁 ui
-│   │   │   │   ├── 📄 avatar.tsx
-│   │   │   │   ├── 📄 button.tsx
-│   │   │   │   ├── 📄 card.tsx
-│   │   │   │   ├── 📄 dialog.tsx
-│   │   │   │   ├── 📄 dropdown-menu.tsx
-│   │   │   │   ├── 📄 input.tsx
-│   │   │   │   ├── 📄 label.tsx
-│   │   │   │   ├── 📄 popover.tsx
-│   │   │   │   └── 📄 select.tsx
-│   │   │   ├── 📄 Hero.tsx
-│   │   │   ├── 📄 JobCard.tsx
-│   │   │   ├── 📄 Navbar.tsx
-│   │   │   ├── 📄 ResumeAnalyser.tsx
-│   │   │   ├── 📄 Skills.tsx
-│   │   │   ├── 📄 career-guide.tsx
-│   │   │   ├── 📄 loading.tsx
-│   │   │   ├── 📄 mode-toggle.tsx
-│   │   │   ├── 📄 scriptLoader.tsx
-│   │   │   └── 📄 theme-provider.tsx
-│   │   ├── 📁 context
-│   │   │   └── 📄 appContext.tsx
-│   │   ├── 📁 lib
-│   │   │   └── 📄 utils.ts
-│   │   └── 📄 type.ts
-│   ├── ⚙️ .gitignore
-│   ├── 📝 README.md
-│   ├── ⚙️ components.json
-│   ├── 📄 eslint.config.mjs
-│   ├── 📄 next-env.d.ts
-│   ├── 📄 next.config.ts
-│   ├── ⚙️ package-lock.json
-│   ├── ⚙️ package.json
-│   ├── 📄 postcss.config.mjs
-│   └── ⚙️ tsconfig.json
-└── 📁 services
-    ├── 📁 auth
-    │   ├── 📁 src
-    │   │   ├── 📁 controllers
-    │   │   │   └── 📄 auth.ts
-    │   │   ├── 📁 middleware
-    │   │   │   └── 📄 multer.ts
-    │   │   ├── 📁 routes
-    │   │   │   └── 📄 auth.ts
-    │   │   ├── 📁 utils
-    │   │   │   ├── 📄 ApiError.ts
-    │   │   │   ├── 📄 AsyncHandler.ts
-    │   │   │   ├── 📄 buffer.ts
-    │   │   │   └── 📄 db.ts
-    │   │   ├── 📄 app.ts
-    │   │   ├── 📄 index.ts
-    │   │   ├── 📄 producer.ts
-    │   │   └── 📄 template.ts
-    │   ├── ⚙️ .gitignore
-    │   ├── ⚙️ package-lock.json
-    │   ├── ⚙️ package.json
-    │   └── ⚙️ tsconfig.json
-    ├── 📁 job
-    │   ├── 📁 src
-    │   │   ├── 📁 controllers
-    │   │   │   └── 📄 job.ts
-    │   │   ├── 📁 middleware
-    │   │   │   ├── 📄 auth.ts
-    │   │   │   └── 📄 multer.ts
-    │   │   ├── 📁 routes
-    │   │   │   └── 📄 job.ts
-    │   │   ├── 📁 utils
-    │   │   │   ├── 📄 ApiError.ts
-    │   │   │   ├── 📄 AsyncHandler.ts
-    │   │   │   ├── 📄 buffer.ts
-    │   │   │   └── 📄 db.ts
-    │   │   ├── 📄 app.ts
-    │   │   ├── 📄 index.ts
-    │   │   ├── 📄 producer.ts
-    │   │   └── 📄 template.ts
-    │   ├── ⚙️ .gitignore
-    │   ├── ⚙️ package-lock.json
-    │   ├── ⚙️ package.json
-    │   └── ⚙️ tsconfig.json
-    ├── 📁 payment
-    │   ├── 📁 src
-    │   │   ├── 📁 controller
-    │   │   │   └── 📄 payment.ts
-    │   │   ├── 📁 middleware
-    │   │   │   └── 📄 auth.ts
-    │   │   ├── 📁 routes
-    │   │   │   └── 📄 payment.ts
-    │   │   ├── 📁 utils
-    │   │   │   ├── 📄 ApiError.ts
-    │   │   │   ├── 📄 AsyncHandler.ts
-    │   │   │   └── 📄 db.ts
-    │   │   └── 📄 index.ts
-    │   ├── ⚙️ .gitignore
-    │   ├── ⚙️ package-lock.json
-    │   ├── ⚙️ package.json
-    │   └── ⚙️ tsconfig.json
-    ├── 📁 user
-    │   ├── 📁 src
-    │   │   ├── 📁 controller
-    │   │   │   └── 📄 user.controller.ts
-    │   │   ├── 📁 middleware
-    │   │   │   ├── 📄 auth.ts
-    │   │   │   └── 📄 multer.ts
-    │   │   ├── 📁 routes
-    │   │   │   └── 📄 user.ts
-    │   │   ├── 📁 utils
-    │   │   │   ├── 📄 ApiError.ts
-    │   │   │   ├── 📄 AsyncHandler.ts
-    │   │   │   ├── 📄 buffer.ts
-    │   │   │   └── 📄 db.ts
-    │   │   └── 📄 index.ts
-    │   ├── ⚙️ .gitignore
-    │   ├── ⚙️ package-lock.json
-    │   ├── ⚙️ package.json
-    │   └── ⚙️ tsconfig.json
-    └── 📁 utils
-        ├── 📁 src
-        │   ├── 📄 consumer.ts
-        │   ├── 📄 index.ts
-        │   └── 📄 route.ts
-        ├── ⚙️ .gitignore
-        ├── ⚙️ package-lock.json
-        ├── ⚙️ package.json
-        └── ⚙️ tsconfig.json
+frontend/
+services/
+  ├── auth/
+  ├── user/
+  ├── job/
+  ├── payment/
+  └── utils/
 ```
 
 ---
+
+## ⚙️ Prerequisites
+
+- Node.js (v18+)
+- PostgreSQL
+- Redis
+- Apache Kafka
+- npm / yarn
+
+---
+
+## 🚀 Setup & Run
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/Prashantbhati7/EzHire.git
+cd ezhire
+```
+
+---
+
+### 2. Install Dependencies
+
+#### Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+#### Backend (run in each service)
+
+```bash
+npm install
+```
+
+---
+
+### 3. Setup Environment Variables
+
+Each service requires:
+
+- PostgreSQL connection URL  
+- Kafka broker URL  
+- Redis URL  
+- JWT Secret  
+- Razorpay keys (payment service)  
+
+---
+
+### 4. Start Infrastructure
+
+Ensure these are running:
+
+- PostgreSQL  
+- Redis  
+- Kafka + Zookeeper  
+
+---
+
+### 5. Run Services
+
+Start each service:
+
+```bash
+npm run dev
+```
+
+---
+
+### 6. Run Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+---
+
+### 7. Open App
+
+```
+http://localhost:3000
+```
+
+---
+
+## ⚠️ Notes
+
+- All services must run simultaneously  
+- Kafka must be configured correctly  
+- Missing env variables will break services  
+
+---
+
+## 👤 Author
+
+**Prashant Bhati**
