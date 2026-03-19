@@ -2,6 +2,7 @@ import { ArrowRight, Briefcase, LoaderIcon, Search, TrendingUp } from "lucide-re
 import { Button } from "./ui/button"
 import Link from "next/link"
 import Image from "next/image"
+import {motion} from "motion/react"
 
 import LightRays from "./LightRays"
 
@@ -9,21 +10,21 @@ const Hero = () => {
    
     
   return (
-   <section className="relative min-h-dvh flex items-center justify-center flex-col overflow-hidden">
+   <section className="relative min-h-dvh flex items-center bg-background justify-center flex-col overflow-hidden">
     <div className="absolute inset-0 z-0 hidden dark:block">
         <LightRays
         raysOrigin="top-center"
         raysColor='#C5A6F7'
         raysSpeed={1}
-        lightSpread={0.7}
-        rayLength={10}
+        lightSpread={0.2}
+        rayLength={2}
         followMouse={true}
         mouseInfluence={0.6}
         noiseAmount={0}
         distortion={0}
         className="custom-rays"
         pulsating={false}
-        fadeDistance={3}
+        fadeDistance={0.4}
         saturation={1}
     />
     </div>
@@ -37,9 +38,9 @@ const Hero = () => {
             
             {/* Heading and Description */}
             <div className="flex flex-col gap-5 w-full max-w-4xl">
-                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.15] text-black dark:text-white tracking-tight">
+                <motion.h2 initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} transition={{duration:1}} className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.15] text-black dark:text-white tracking-tight">
                     Find Your Dream Job at <span className="text-red-500">Ez<span className="bg-linear-to-r bg-clip-text text-transparent from-blue-500 via-red-400 to-blue-800">Hire</span></span>
-                </h2>
+                </motion.h2>
                 <p className="text-base sm:text-lg md:text-xl leading-relaxed opacity-80 max-w-2xl md:mx-0 mx-auto">
                     Connect with top employers and discover opportunities that match your skills and interests. Whether you are a job seeker or recruiter, we have got you covered with powerful tools and a seamless experience.
                 </p>

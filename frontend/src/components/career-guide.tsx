@@ -73,7 +73,7 @@ const CareerGuide = () => {
 
 
   return (
-    <div className="   w-full py-4 bg-linear-to-b from-background via-blue-300 dark:via-blue-800 ">
+    <div className="   w-full py-4 bg-linear-to-b  ">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-blue-50 dark:bg-blue-900 mb-4">
