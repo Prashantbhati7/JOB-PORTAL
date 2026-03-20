@@ -40,7 +40,9 @@ const RegisterPage = () => {
       formData.append('role',role);
       
       if (role=='jobseeker'){
-        formData.append('file',resume);
+        if (resume) {
+          formData.append('file', resume);
+        }
         formData.append('bio',bio);
       }
       

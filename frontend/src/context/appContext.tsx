@@ -15,7 +15,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const fetchUser = async()=>{
         setLoading(true);
         try{
-            const response = await axios.get(`http://localhost:5003/api/user/profile` ,{withCredentials:true});
+            const response = await axios.get(`${user_service}/api/user/profile` ,{withCredentials:true});
             console.log("response is ",response);
             setUser(response.data.user);
             setIsAuth(true);
@@ -32,7 +32,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const updateProfilePic = async(formData:any)=>{
         setLoading(true);
         try{
-            const {data} = await axios.patch('http://localhost:5003/api/user/profile/pic',formData,{withCredentials:true});
+            const {data} = await axios.patch(`${user_service}/api/user/profile/pic`,formData,{withCredentials:true});
             toast.success(data.message);
             fetchUser();    // it will updata the user states to new updated one 
         }catch(error:any){
@@ -45,7 +45,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const updateResume = async(formData:any)=>{
         setLoading(true);
         try{
-            const {data} = await axios.patch('http://localhost:5003/api/user/resume',formData,{withCredentials:true});
+            const {data} = await axios.patch(`${user_service}/api/user/resume`,formData,{withCredentials:true});
             toast.success(data.message);
             fetchUser();    // it will updata the user states to new updated one 
         }catch(error:any){
@@ -58,7 +58,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const updateUser = async(name:string,phone_number:string,bio:string)=>{
         setBtnLoading(true);
         try{
-            const {data} = await axios.patch('http://localhost:5003/api/user/profile',{name,phone_number,bio},{withCredentials:true});
+            const {data} = await axios.patch(`${user_service}/api/user/profile`,{name,phone_number,bio},{withCredentials:true});
             toast.success(data.message);
             fetchUser();    // it will updata the user states to new updated one 
         }catch(error:any){
@@ -72,7 +72,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const addSkill = async(skill:string,setSkill:React.Dispatch<React.SetStateAction<string | "">>)=>{
         setBtnLoading(true);
         try{
-            const {data} = await axios.patch('http://localhost:5003/api/user/skills',{skill},{withCredentials:true});
+            const {data} = await axios.patch(`${user_service}/api/user/skills`,{skill},{withCredentials:true});
             toast.success(data.message);
             setSkill("");
             fetchUser();    // it will updata the user states to new updated one 
@@ -86,7 +86,7 @@ const AppProvider:React.FC<AppProviderProps> = ({children})=>{
     const removeSkill = async(skill:string)=>{
         setBtnLoading(true);
         try{
-            const {data} = await axios.post('http://localhost:5003/api/user/skills/remove',{skill},{withCredentials:true});
+            const {data} = await axios.post(`${user_service}/api/user/skills/remove`,{skill},{withCredentials:true});
             toast.success(data.message);
             fetchUser();
         }catch(error:any){
@@ -160,10 +160,10 @@ const UseAppData = ():AppContextType =>{
     
 }
 
-export  const utils_service = "http://localhost:5001";
-export  const auth_service = "http://localhost:5002";
-export  const user_service = "http://localhost:5003";
-export  const job_service = "http://localhost:5004";
-export const payment_service = 'http://localhost:5005';
+export  const utils_service = "http://13.63.237.127:5001";
+export  const auth_service = "http://13.63.237.127:5002";
+export  const user_service = "http://13.63.237.127:5003";
+export  const job_service = "http://13.63.237.127:5004";
+export const payment_service = 'http://13.63.237.127:5005';
 
 export {AppContext,AppProvider,UseAppData}

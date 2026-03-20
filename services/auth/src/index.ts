@@ -1,8 +1,13 @@
 import app from './app.js'
-import {sql} from './utils/db.js'
+import { sql } from './utils/db.js'
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
 dotenv.config();
+
+if (!process.env.DB_URL) {
+    console.error("DB_URL is not set in the environment variables.");
+    process.exit(1);
+}
 
 export const redisClient = createClient({
     url:process.env.REDIS_URL
@@ -51,10 +56,21 @@ async function initDb(){
         console.log("Error in initializing database ",err);
     } 
 }
-initDb().then(()=>{
-    const PORT = process.env.PORT || 3000;
+// initDb().then(()=>{
+//     const PORT = process.env.PORT || 3000;
     
-    app.listen(PORT,( )=>{
-        console.log("auth service is running on PORT ",PORT);
-    })
-})
+//     app.listen(PORT,( )=>{
+//         console.log("auth service is running on PORT ",PORT);
+//     })
+// })
+
+(async () => {
+    try {
+        await initDb();
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => console.log(`auth service is running on PORT ${PORT}`));
+    } catch (err) {
+        console.error("Failed to initialize database or start server:", err);
+        process.exit(1);
+    }
+})();

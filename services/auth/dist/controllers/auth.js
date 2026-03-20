@@ -49,6 +49,7 @@ const registerUser = AsyncHandler(async (req, res, next) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     };
     return res.status(201).cookie('token', token, options).json({ "user": registeredUser, "message": "User Registered Successfully", "token": token });
 });
@@ -79,6 +80,7 @@ const loginUser = AsyncHandler(async (req, res, next) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     };
     return res.status(200).cookie('token', token, options).json({ "user": userobj, "message": "User Logged In Successfully", "token": token });
 });

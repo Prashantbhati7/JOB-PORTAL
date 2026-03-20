@@ -7,6 +7,13 @@ import { sql } from "../utils/db.js";
 import { applicationStatusUpdateTemplate } from "../template.js";
 import { PublishToTopic } from "../producer.js";
 
+type uploadResponse = {
+    url:string,
+    public_id:string
+}
+
+
+
 const createCompany = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     const user = req.user;
     if (!user ) throw new ApiError(401,"Not Authenticated");
@@ -19,7 +26,7 @@ const createCompany = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     if (!file) throw new ApiError(400,"Logo File is Required");
     const fileBuffer = getBuffer(file);
     if (!fileBuffer || !fileBuffer.content) throw new ApiError(500,"Failed to genreate Buffer");
-    const {data:{url,public_id}} = await axios.post('http://localhost:5001/api/utils/upload',{buffer:fileBuffer.content,public_id:null},{
+    const {data:{url,public_id}} = await axios.post<uploadResponse>(`${process.env.UPLOAD_SERVICE}/api/utils/upload`,{buffer:fileBuffer.content,public_id:null},{
         headers:{
             'Content-Type':'application/json'
         }

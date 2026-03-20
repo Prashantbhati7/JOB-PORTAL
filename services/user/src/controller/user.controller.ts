@@ -41,6 +41,11 @@ const updateUserProfile = AsyncHandler(async(req:AuthenticatedRequest,res,next)=
     })
 })
 
+type uploadResponse = {
+    url:string,
+    public_id:string
+}
+
 const updateProfilePic = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     const user = req.user;
     if (!user) throw new ApiError(401,"Authentication Error ");
@@ -49,7 +54,7 @@ const updateProfilePic = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>
     const oldPublicId = user.profile_pic_public_id;
     const fileBuffer = getBuffer(file);
     if (!fileBuffer || !fileBuffer.content)  throw new ApiError(400,"File is required");
-    const {data:uploadResult} = await axios.post(`http://localhost:5001/api/utils/upload`,{
+    const {data} = await axios.post<uploadResponse>(`${process.env.UPLOAD_SERVICE}/api/utils/upload`,{
         buffer:fileBuffer.content,
         public_id:oldPublicId
     },{
@@ -58,7 +63,7 @@ const updateProfilePic = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>
         }
     }
     )
-    const [updatedUser] = await sql`UPDATE users SET profile_pic = ${uploadResult.url}, profile_pic_public_id = ${uploadResult.public_id} WHERE user_id = ${user.user_id} RETURNING user_id,name,email,profile_pic,profile_pic_public_id`;
+    const [updatedUser] = await sql`UPDATE users SET profile_pic = ${data.url}, profile_pic_public_id = ${data.public_id} WHERE user_id = ${user.user_id} RETURNING user_id,name,email,profile_pic,profile_pic_public_id`;
     if (!updatedUser) throw new ApiError(404,"User not Updated");
     return res.status(200).json({
         success:true,
@@ -75,7 +80,7 @@ const updateResume = AsyncHandler(async(req:AuthenticatedRequest,res,next)=>{
     if (!file) throw new ApiError(400,"No Resume is found ");
     const oldPublicId = user.resume_public_id;
     const fileBuffer = getBuffer(file);
-    const {data:uploadResult} = await axios.post(`http:localhost:5001/api/utils/upload`,{
+    const {data:uploadResult} = await axios.post<uploadResponse>(`${process.env.UPLOAD_SERVICE}/api/utils/upload`,{
         buffer:fileBuffer.content,
         public_id:oldPublicId
     },{

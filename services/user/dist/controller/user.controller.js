@@ -49,7 +49,7 @@ const updateProfilePic = AsyncHandler(async (req, res, next) => {
     const fileBuffer = getBuffer(file);
     if (!fileBuffer || !fileBuffer.content)
         throw new ApiError(400, "File is required");
-    const { data: uploadResult } = await axios.post(`http://localhost:5001/api/utils/upload`, {
+    const { data } = await axios.post(`http://localhost:5001/api/utils/upload`, {
         buffer: fileBuffer.content,
         public_id: oldPublicId
     }, {
@@ -57,7 +57,7 @@ const updateProfilePic = AsyncHandler(async (req, res, next) => {
             'Content-Type': 'application/json'
         }
     });
-    const [updatedUser] = await sql `UPDATE users SET profile_pic = ${uploadResult.url}, profile_pic_public_id = ${uploadResult.public_id} WHERE user_id = ${user.user_id} RETURNING user_id,name,email,profile_pic,profile_pic_public_id`;
+    const [updatedUser] = await sql `UPDATE users SET profile_pic = ${data.url}, profile_pic_public_id = ${data.public_id} WHERE user_id = ${user.user_id} RETURNING user_id,name,email,profile_pic,profile_pic_public_id`;
     if (!updatedUser)
         throw new ApiError(404, "User not Updated");
     return res.status(200).json({
