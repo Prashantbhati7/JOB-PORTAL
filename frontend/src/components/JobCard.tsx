@@ -11,10 +11,14 @@ interface JobCardProps {
     job:Job
 }
 const JobCard:React.FC<JobCardProps> = ({job}) => {
-    const {user,btnloading,applyJob,applications} = UseAppData();
-    const [applied,setApplied]= useState(true);
+    const {user,btnloading,applyJob,setLoading,fetchApplications,applications} = UseAppData();
+    const [applied,setApplied]= useState(false);
     const applyJobHandler = async(id:number)=>{
+        setLoading(true);
         await applyJob(id)
+        setApplied(true);
+        await fetchApplications();
+        setLoading(false);
     } 
     const [load,setload] = useState(true);
     useEffect(()=>{
