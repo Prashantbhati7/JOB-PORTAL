@@ -10,7 +10,7 @@ COPY tsconfig.json ./
 
 COPY src ./src
 
-RUN npm run build && ls -R
+RUN npm run build 
 
 FROM node:22-alpine 
 

@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UseAppData } from "@/context/appContext";
+import { auth_service, UseAppData } from "@/context/appContext";
 import axios from "axios";
 import { User } from "lucide-react";
 import Link from "next/link";
@@ -28,7 +28,7 @@ const ResendPage = () => {
         }
         setBtnLoading(true);
         try{
-            const {data} = await axios.post(`http://localhost:5002/api/auth/reset/${token}`,{password:Password});
+            const {data} = await axios.post(`${auth_service}/api/auth/reset/${token}`,{password:Password});
             toast.success(data?.message || "Password reset successfully ");
             setPassword("");
             router.push('/login')

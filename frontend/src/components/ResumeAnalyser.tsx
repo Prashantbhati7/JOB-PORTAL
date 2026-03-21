@@ -23,6 +23,7 @@ import {
 import axios from "axios";
 import { ResumeAnalysisResponse } from "@/type";
 import toast from "react-hot-toast";
+import { utils_service } from "@/context/appContext";
 
 const ResumeAnalyzer = () => {
   const [open, setOpen] = useState(false);
@@ -64,7 +65,7 @@ const ResumeAnalyzer = () => {
     try {
       const base64 = await convertToBase64(file);
       const { data } = await axios.post(
-        `http://localhost:5001/api/utils/resume-analyser`,
+        `${utils_service}/api/utils/resume-analyser`,
         {
           pdfBase64: base64,
         },

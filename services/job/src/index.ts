@@ -74,9 +74,13 @@ const init = async()=>{
     }
 }
 
-
-init().then(()=>{
-    app.listen(PORT,()=> console.log("Job service is running on port ",PORT));
-}).catch(()=>{
-    console.log("Error while connecting to database");
-})
+(async () => {
+    try {
+        //await initDb();
+        const PORT = process.env.PORT || 5004;
+        app.listen(PORT, () => console.log(`job service is running on PORT ${PORT}`));
+    } catch (err) {
+        console.error("Failed to initialize database or start server:", err);
+        process.exit(1);
+    }
+})();

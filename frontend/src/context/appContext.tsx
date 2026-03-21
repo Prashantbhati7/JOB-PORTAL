@@ -160,10 +160,10 @@ const UseAppData = ():AppContextType =>{
     
 }
 
-export  const utils_service = "http://13.63.237.127:5001";
-export  const auth_service = "http://13.63.237.127:5002";
-export  const user_service = "http://13.63.237.127:5003";
-export  const job_service = "http://13.63.237.127:5004";
-export const payment_service = 'http://13.63.237.127:5005';
+export  const utils_service = "http://13.234.59.155:5001";
+export  const auth_service = "http://13.234.59.155:5002";
+export  const user_service = "http://13.234.59.155:5003";
+export  const job_service = "http://13.234.59.155:5004";
+export const payment_service = 'http://13.234.59.155:5005';
 
 export {AppContext,AppProvider,UseAppData}

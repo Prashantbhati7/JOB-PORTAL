@@ -24,7 +24,7 @@ const JobPage = () => {
     const [loading,setloading] = useState(true);
     const fetchSingleJob = async()=>{
         try{
-            const {data} = await axios.get(`http://localhost:5004/api/job/${id}`)
+            const {data} = await axios.get(`${job_service}/api/job/${id}`)
             setJob(data.job);
             setloading(false);
         }catch(error:any){

@@ -1,6 +1,6 @@
 "use client"
 
-import { UseAppData } from "@/context/appContext";
+import { auth_service, UseAppData } from "@/context/appContext";
 import axios from "axios";
 import { redirect } from "next/navigation";
 
@@ -32,7 +32,7 @@ const Page = () => {
         return;
       }
       try{
-        const response = await axios.post('http://localhost:5002/api/auth/login',{email,password},{withCredentials:true});
+        const response = await axios.post(`${auth_service}/api/auth/login`,{email,password},{withCredentials:true});
         console.log("response is ",response);
         if (response.data.user) {
           console.log("user is ",response.data.user);

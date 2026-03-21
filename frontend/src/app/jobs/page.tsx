@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog,DialogClose,DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { job_service } from '@/context/appContext';
 import { Job } from '@/type';
 import axios from 'axios';
 import { Briefcase, Filter, Loader, MapPin, Search, X} from 'lucide-react';
@@ -22,7 +23,7 @@ const JobsPage = () => {
     const fetchJobs = async()=>{
         setloading(true);
         try{
-            const {data} = await axios.get(`http://localhost:5004/api/job?title=${title}&location=${location}`,{withCredentials:true});
+            const {data} = await axios.get(`${job_service}/api/job?title=${title}&location=${location}`,{withCredentials:true});
             setJobs(data.jobs);
            // toast.success(data.message);
         }catch(error:any){

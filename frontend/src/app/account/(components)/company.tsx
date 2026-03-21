@@ -7,6 +7,7 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { job_service } from "@/context/appContext";
 
 import { Company as companyType } from "@/type";
 import axios from "axios";
@@ -38,7 +39,7 @@ const Company = () => {
     const fetchCompanies = async()=>{
       setLoading(true);
       try{
-        const {data} = await axios.get('http://localhost:5004/api/company',{withCredentials:true});
+        const {data} = await axios.get(`${job_service}/api/company`,{withCredentials:true});
         console.log("all comapnies are ",data.companies);
         setComapanies(data.companies);
       }catch(error:any){
@@ -60,7 +61,7 @@ const Company = () => {
         formData.append('description',description);
         formData.append('website',website);
         formData.append('file',logo as File);
-        const {data} = await axios.post('http://localhost:5004/api/company',formData,{withCredentials:true});
+        const {data} = await axios.post(`${job_service}/api/company`,formData,{withCredentials:true});
         toast.success(data.message);
         clearData();
         fetchCompanies();
@@ -73,7 +74,7 @@ const Company = () => {
     const deleteCompany = async(companyId:string)=>{
       setBtnLoading(true);
       try{
-        const {data} = await axios.delete(`http://localhost:5004/api/company/${companyId}`,{withCredentials:true});
+        const {data} = await axios.delete(`${job_service}/api/company/${companyId}`,{withCredentials:true});
         toast.success(data.message);
         fetchCompanies();
       }catch(error:any){

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Info from "../(components)/info";
 import Skills from "@/app/account/(components)/Skills";
+import { user_service } from "@/context/appContext";
 
 
 const Userpage = () => {
@@ -18,7 +19,7 @@ const Userpage = () => {
     const fetchUser = async()=>{
         try{
             setLoading(true);
-            const {data} = await axios.get(`http://localhost:5003/api/user/${id}`,{withCredentials:true});
+            const {data} = await axios.get(`${user_service}/api/user/${id}`,{withCredentials:true});
             setUser(data.user);
             console.log('data is ',data);
         }

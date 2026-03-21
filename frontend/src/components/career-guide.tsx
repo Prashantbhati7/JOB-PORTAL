@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 
 import toast from "react-hot-toast";
+import { utils_service } from "@/context/appContext";
 
 
 const CareerGuide = () => {
@@ -51,7 +52,7 @@ const CareerGuide = () => {
       setLoading(true);
       setError(null);
       try{
-        const response = await axios.post('http://localhost:5001/api/utils/carrier',{skills:skills})
+        const response = await axios.post(`${utils_service}/api/utils/carrier`,{skills:skills})
         console.log("guidence reponse is ",response);
         setResponse(response.data);
         toast.success('Career Guidance Generated');

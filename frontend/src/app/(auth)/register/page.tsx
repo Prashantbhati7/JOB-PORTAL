@@ -1,12 +1,12 @@
 "use client"
 
-import { UseAppData } from "@/context/appContext";
+import { auth_service, UseAppData } from "@/context/appContext";
 import axios from "axios";
 import { redirect } from "next/navigation";
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Cookies from 'js-cookie';
+
 import { Label } from "@/components/ui/label";
 import { ArrowRight,  Lock, Mail, NotebookIcon, PenIcon, PhoneCall, User } from "lucide-react";
 import Link from "next/link";
@@ -53,7 +53,7 @@ const RegisterPage = () => {
       }
       try{
         console.log("form data is ",formData);
-        const response = await axios.post('http://localhost:5002/api/auth/register',formData,{withCredentials:true});
+        const response = await axios.post(`${auth_service}/api/auth/register`,formData,{withCredentials:true});
          
         if (response.data.user) {
           console.log("user is ",response.data.user);

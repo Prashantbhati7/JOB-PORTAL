@@ -19,7 +19,7 @@ const SubscriptionPage = () => {
     const handleSubscribe = async()=>{
          setLoading(true);
         //  try{
-         const {data} = await axios.post(`http://localhost:5005/api/payment/checkout`,
+         const {data} = await axios.post(`${payment_service}/api/payment/checkout`,
             {}
             ,{withCredentials:true})
             const order = data.order;
